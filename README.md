@@ -21,5 +21,5 @@ pip install -r requirements.txt
 
 4. Add the path to this folder to your PYTHONPATH:
 ```
-export PYTHONPATH=$PYTHONPATH:/path/to/bamboo-chr
+export PYTHONPATH=$PYTHONPATH:/path/to/bamboo-acs
 ```
