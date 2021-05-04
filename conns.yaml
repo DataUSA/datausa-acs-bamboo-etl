@@ -1,0 +1,7 @@
+postgres-zcube:
+  driver: bamboo_lib.connectors.drivers.postgres.PostgresDriver
+  uri: postgres://postgres:$BAMBOO_DB_PW@$BAMBOO_DB_HOST/datausa_vp
+
+monet-backend:
+  driver: bamboo_lib.connectors.drivers.monet.MonetDriver
+  uri: monetdb://monetdb:$DATAUSA_DB_PW@$DATAUSA_DB_HOST:50000/datausa
