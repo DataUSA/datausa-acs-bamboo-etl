@@ -4,8 +4,9 @@ import pandas as pd
 
 from acs.static import LIST_STATE, FIPS_CODE
 
+
 def read_by_zone(year, geo, estimate, apis):
-    if geo != 'tract':
+    if geo in ['us', 'state', 'county', 'place', 'metropolitan statistical area/micropolitan statistical area', 'congressional district']:
         url = apis[0].format(year, estimate, geo)
         
         r = requests.get(url)
@@ -16,7 +17,7 @@ def read_by_zone(year, geo, estimate, apis):
         df = pd.DataFrame()
         
         for i in LIST_STATE:
-            url = apis[1].format(year, estimate, 'tract', i)
+            url = apis[1].format(year, estimate, geo, i)
             
             r = requests.get(url)
             content = r.json()
@@ -24,6 +25,7 @@ def read_by_zone(year, geo, estimate, apis):
             df_tract = pd.DataFrame(content[1::], columns=content[0])
             df = df.append(df_tract).reset_index(drop=True)
     return df
+
 
 def create_geoid_in_df(df, geo):
     if geo == 'us':
