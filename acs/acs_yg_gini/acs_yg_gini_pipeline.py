@@ -1,6 +1,7 @@
 import requests
 import numpy as np
 import pandas as pd
+import os
 
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
@@ -9,14 +10,16 @@ from bamboo_lib.steps import DownloadStep, LoadStep
 from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS
 from acs.helper import read_by_zone, create_geoid_in_df
 
+api_key = os.environ['API_KEY']
+
 class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         year = params.get('year')
         estimate = params.get('estimate')
         apis = DICT_APIS['acs_yg_gini']
 
-        def transform_by_zone(year, geo, estimate, apis):
-            df = read_by_zone(year, geo, estimate, apis)
+        def transform_by_zone(year, geo, estimate, apis, api_key):
+            df = read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.rename(columns = {'B19083_001E': 'moe', 'B19083_001M': 'mea'}, inplace=True)
             df['year'] = year
@@ -28,7 +31,7 @@ class TransformStep(PipelineStep):
         list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district']
 
         for zone in list_geo:
-            df_geo = transform_by_zone(year, zone, estimate, apis)
+            df_geo = transform_by_zone(year, zone, estimate, apis, api_key)
             df_final = df_final.append(df_geo).reset_index(drop=True)
 
         print(df_final.head())

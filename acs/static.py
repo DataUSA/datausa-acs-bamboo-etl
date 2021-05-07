@@ -15,6 +15,6 @@ FIPS_CODE = {
 }
 
 DICT_APIS = {
-    'acs_yg_gini': ['https://api.census.gov/data/{}/acs/acs{}?get=B19083_001E,B19083_001M&for={}&key=d0a3481f70837de29a56f7a3b7df087007e942e1', 
-                    'https://api.census.gov/data/{}/acs/acs{}?get=B19083_001E,B19083_001M&for={}&key=d0a3481f70837de29a56f7a3b7df087007e942e1&in=state:{}']
+    'acs_yg_gini': ['https://api.census.gov/data/{}/acs/acs{}?get=B19083_001E,B19083_001M&for={}&key={}', 
+                    'https://api.census.gov/data/{}/acs/acs{}?get=B19083_001E,B19083_001M&for={}&key={}&in=state:{}']
 }

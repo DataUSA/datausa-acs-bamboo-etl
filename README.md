@@ -1,25 +1,47 @@
-# bamboo-acs
+# Data USA ACS Bamboo ETL
 
-## Overview
+This repository will have a series of Bamboo pipelines to process and ingest the data from the American Community Survey used in Data USA.
 
-## Setup
+## Local Setup
 
-1. Create a new virtual environment:
+1. Create a new virtual environment and activate it:
 ```
 python -m venv venv
-```
-
-2. Then activate it:
-```
 source venv/bin/activate
 ```
 
-3. Install requirements
+2. Install requirements
 ```
 pip install -r requirements.txt
 ```
 
-4. Add the path to this folder to your PYTHONPATH:
+3. Create an environment variables file following this structure:
 ```
-export PYTHONPATH=$PYTHONPATH:/path/to/acs-test
+export API_KEY='<Your API KEY goes here>';
+export DATAUSA_DB_PW='monetdb'; # The default password for MonetDB is monetdb.
+export DATAUSA_DB_HOST='localhost'; # Assuming you're ingesting inside a local MonetDB container.
+export PYTHONPATH=$PYTHONPATH:<path to repository>/datausa-acs-bamboo-etl;
+```
+
+4. Run a pipeline, for example, the Gini pipeline:
+```
+source .env
+cd acs/acs_yg_gini
+python acs_yg_gini_pipeline.py
+```
+
+## Dockerized Setup
+
+1. Create Python 3.7.9 container:
+```
+docker run -it -v <path to repository>/datausa-acs-bamboo-etl:/datausa-acs-bamboo-etl --name=python3-local python:3.7.9 bash
+```
+
+2. Use previously created `.env` file and run a pipeline, say the Gini pipeline:
+```
+cd datausa-acs-bamboo-etl
+pip install -r requirements.txt
+source .env
+cd acs/acs_yg_gini
+python acs/acs_yg_gini_pipeline.py
 ```

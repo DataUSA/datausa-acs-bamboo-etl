@@ -5,9 +5,9 @@ import pandas as pd
 from acs.static import LIST_STATE, FIPS_CODE
 
 
-def read_by_zone(year, geo, estimate, apis):
+def read_by_zone(year, geo, estimate, apis, api_key):
     if geo in ['us', 'state', 'county', 'place', 'metropolitan statistical area/micropolitan statistical area', 'congressional district']:
-        url = apis[0].format(year, estimate, geo)
+        url = apis[0].format(year, estimate, geo, api_key)
         
         r = requests.get(url)
         content = r.json()
@@ -17,7 +17,7 @@ def read_by_zone(year, geo, estimate, apis):
         df = pd.DataFrame()
         
         for i in LIST_STATE:
-            url = apis[1].format(year, estimate, geo, i)
+            url = apis[1].format(year, estimate, geo, api_key, i)
             
             r = requests.get(url)
             content = r.json()
