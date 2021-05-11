@@ -92,6 +92,8 @@ class AcsHealthCoverageSPipeline(EasyPipeline):
             'mea_2': 'float',
             'mea_3': 'float',
             'mea_4': 'float',
+            'dim_0': 'int',
+            'dim_1': 'int',
             'geoid': 'text'
         }
 
