@@ -22,7 +22,7 @@ class TransformStep(PipelineStep):
         def transform_by_zone(year, geo, estimate, apis, api_key):
             df = read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
-            df.rename(columns = {'B19083_001E': 'moe', 'B19083_001M': 'mea'}, inplace=True)
+            df.rename(columns = {'B19083_001E': 'mea', 'B19083_001M': 'moe'}, inplace=True)
             df['year'] = year
             df = df[['moe', 'mea', 'year', 'geoid']]
             return df
