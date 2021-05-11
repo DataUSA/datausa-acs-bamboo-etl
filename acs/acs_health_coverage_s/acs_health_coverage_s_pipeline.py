@@ -108,7 +108,7 @@ class AcsHealthCoverageSPipeline(EasyPipeline):
         
 if __name__ == '__main__':
     acs_pipeline = AcsHealthCoverageSPipeline()
-    for estimate in [1, 5]:
+    for estimate in ['1', '5']:
         for year in range(2015, 2019 + 1):
             acs_pipeline.run({
                 'year': year,
