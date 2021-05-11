@@ -2,6 +2,7 @@ import requests
 import numpy as np
 import pandas as pd
 import os
+import swifter
 
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
@@ -28,7 +29,7 @@ class TransformStep(PipelineStep):
 
         df_final = pd.DataFrame()
 
-        list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district']
+        list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area']
 
         for zone in list_geo:
             df_geo = transform_by_zone(year, zone, estimate, apis, api_key)
@@ -64,7 +65,7 @@ class AcsYgGiniPipeline(EasyPipeline):
             schema= 'acs', dtype = dtype, pk = ['geoid']
         )
 
-        return [transform_step, load_step]
+        return [transform_step]
 
 if __name__ == '__main__':
     acs_pipeline = AcsYgGiniPipeline()

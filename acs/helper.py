@@ -1,14 +1,14 @@
 import requests
 import numpy as np
 import pandas as pd
+import swifter
 
 from acs.static import LIST_STATE, FIPS_CODE
 
 
 def read_by_zone(year, geo, estimate, apis, api_key):
-    if geo in ['us', 'state', 'county', 'place', 'metropolitan statistical area/micropolitan statistical area', 'congressional district']:
+    if geo in ['us', 'state', 'county', 'place', 'metropolitan statistical area/micropolitan statistical area', 'congressional district', 'zip code tabulation area']:
         url = apis[0].format(year, estimate, geo, api_key)
-        
         r = requests.get(url)
         content = r.json()
         
@@ -31,19 +31,19 @@ def create_geoid_in_df(df, geo):
     if geo == 'us':
         df['geoid'] = FIPS_CODE[geo]
     elif geo == 'state':
-        df['geoid'] = df.apply(lambda x: FIPS_CODE[geo] + '{:02d}'.format(int(x['state'])), axis=1) 
+        df['geoid'] = df.swifter.apply(lambda x: FIPS_CODE[geo] + '{:02d}'.format(int(x['state'])), axis=1) 
     elif geo == 'county':
-        df['geoid'] = df.apply(lambda x: FIPS_CODE[geo] + '{:02d}'.format(int(x['state'])) + '{:03d}'.format(int(x['county'])), axis=1)
+        df['geoid'] = df.swifter.apply(lambda x: FIPS_CODE[geo] + '{:02d}'.format(int(x['state'])) + '{:03d}'.format(int(x['county'])), axis=1)
     elif geo == 'metropolitan statistical area/micropolitan statistical area':
         df.rename(columns = {'metropolitan statistical area/micropolitan statistical area': 'msa'}, inplace=True)
-        df['geoid'] = df.apply(lambda x: FIPS_CODE['msa'] + '{:05d}'.format(int(x['msa'])), axis=1)
+        df['geoid'] = df.swifter.apply(lambda x: FIPS_CODE['msa'] + '{:05d}'.format(int(x['msa'])), axis=1)
     elif geo == 'tract':
-        df['geoid'] = df.apply(lambda x: FIPS_CODE[geo] + '{:02d}'.format(int(x['state'])) + '{:03d}'.format(int(x['county'])) + '{:06d}'.format(int(x[geo])), axis=1)
+        df['geoid'] = df.swifter.apply(lambda x: FIPS_CODE[geo] + '{:02d}'.format(int(x['state'])) + '{:03d}'.format(int(x['county'])) + '{:06d}'.format(int(x[geo])), axis=1)
     elif geo == 'congressional district':
         df['congressional district'] = df['congressional district'].replace('ZZ', 0)
-        df['geoid'] = df.apply(lambda x: FIPS_CODE[geo] + '{:02d}'.format(int(x['state'])) + '{:02d}'.format(int(x['congressional district'])), axis=1)
+        df['geoid'] = df.swifter.apply(lambda x: FIPS_CODE[geo] + '{:02d}'.format(int(x['state'])) + '{:02d}'.format(int(x['congressional district'])), axis=1)
     elif geo == 'zip code tabulation area':
-        df['geoid'] = df.apply(lambda x: FIPS_CODE[geo] + '{:05d}'.format(int(x[geo])), axis=1)
+        df['geoid'] = df.swifter.apply(lambda x: FIPS_CODE[geo] + '{:05d}'.format(int(x[geo])), axis=1)
     else:
-        df['geoid'] = df.apply(lambda x: FIPS_CODE[geo] + '{:02d}'.format(int(x['state'])) + '{:05d}'.format(int(x[geo])), axis=1)
+        df['geoid'] = df.swifter.apply(lambda x: FIPS_CODE[geo] + '{:02d}'.format(int(x['state'])) + '{:05d}'.format(int(x[geo])), axis=1)
     return df
