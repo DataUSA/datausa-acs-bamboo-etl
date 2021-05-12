@@ -8,7 +8,7 @@ from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import DownloadStep, LoadStep
 
-from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS
+from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
 from acs.helper import read_by_zone, create_geoid_in_df
 from static import DICT_RENAME
 
@@ -63,7 +63,8 @@ class TransformStep(PipelineStep):
             df_geo = transform_by_zone(year, zone, estimate, apis, api_key)
             df_final = df_final.append(df_geo).reset_index(drop=True)
         
-        print(df_final.head()) 
+        df_final[['mea_0', 'moe_0', 'mea_1', 'mea_2', 'mea_3', 'mea_4', 'moe_1', 'moe_2', 'moe_3', 'moe_4']] = df_final[['mea_0', 'moe_0', 'mea_1', 'mea_2', 'mea_3', 'mea_4', 'moe_1', 'moe_2', 'moe_3', 'moe_4']].astype(float)
+        df_final.replace(NULL_LIST, np.nan, inplace=True)
 
         return df_final
 
@@ -101,7 +102,7 @@ class AcsHealthCoverageSPipeline(EasyPipeline):
 
         load_step = LoadStep(
             "acs_health_coverage_s_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid']
+            schema='acs', dtype=dtype, pk=['geoid', 'dim_0', 'dim_1'], nullable_list=['mea_0', 'mea_1', 'mea_2', 'mea_3', 'mea_4', 'moe_0', 'moe_1', 'moe_2', 'moe_3', 'moe_4']
         )
 
         return [transform_step, load_step]

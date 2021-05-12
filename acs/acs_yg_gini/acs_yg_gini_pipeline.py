@@ -8,7 +8,7 @@ from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import DownloadStep, LoadStep
 
-from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS
+from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
 from acs.helper import read_by_zone, create_geoid_in_df
 
 api_key = os.environ['API_KEY']
@@ -34,8 +34,10 @@ class TransformStep(PipelineStep):
         for zone in list_geo:
             df_geo = transform_by_zone(year, zone, estimate, apis, api_key)
             df_final = df_final.append(df_geo).reset_index(drop=True)
+        
+        df_final[['mea', 'moe']] = df_final[['mea', 'moe']].astype(float)
+        df_final.replace(NULL_LIST, np.nan, inplace=True)
 
-        print(df_final.head())
         return df_final
 
 class AcsYgGiniPipeline(EasyPipeline):
@@ -62,7 +64,7 @@ class AcsYgGiniPipeline(EasyPipeline):
 
         load_step = LoadStep(
             "acs_yg_gini_{}".format(params.get('estimate')), db_connector, if_exists = 'append',
-            schema= 'acs', dtype = dtype, pk = ['geoid']
+            schema= 'acs', dtype = dtype, pk = ['geoid'], nullable_list=['moe', 'mea']
         )
 
         return [transform_step, load_step]

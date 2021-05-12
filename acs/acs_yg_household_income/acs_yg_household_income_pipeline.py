@@ -59,7 +59,7 @@ class TransformStep(PipelineStep):
             df_geo = transform_by_zone(year, zone, estimate, apis, api_key)
             df_final = df_final.append(df_geo).reset_index(drop=True)
         
-        print(df_final.head()) 
+        df_final[['mea', 'moe']] = df_final[['mea', 'moe']].astype(float)
 
         return df_final
 
@@ -88,7 +88,7 @@ class AcsYgHouseholdIncomePipeline(EasyPipeline):
 
         load_step = LoadStep(
             "acs_yg_household_income_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid']
+            schema='acs', dtype=dtype, pk=['geoid', 'dim_0'], nullable_list=['moe', 'mea']
         )
 
         return [transform_step, load_step]
