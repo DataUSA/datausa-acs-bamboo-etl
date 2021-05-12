@@ -26,5 +26,7 @@ DICT_APIS = {
     'acs_yg_housing_median_value': ['https://api.census.gov/data/{}/acs/acs{}?get=B25077_001E,B25077_001M&for={}&key={}', 
                                     'https://api.census.gov/data/{}/acs/acs{}?get=B25077_001E,B25077_001M&for={}&key={}&in=state:{}'],
     'acs_yg_total_population': ['https://api.census.gov/data/{}/acs/acs{}?get=B01003_001E,B01003_001M&for={}&key={}', 
-                                'https://api.census.gov/data/{}/acs/acs{}?get=B01003_001E,B01003_001M&for={}&key={}&in=state:{}']
+                                'https://api.census.gov/data/{}/acs/acs{}?get=B01003_001E,B01003_001M&for={}&key={}&in=state:{}'],
+    'acs_ygc_citizenship_status': ['https://api.census.gov/data/{}/acs/acs{}?get=B05001_002E,B05001_003E,B05001_004E,B05001_005E,B05001_006E,B05001_002M,B05001_003M,B05001_004M,B05001_005M,B05001_006M&for={}&key={}', 
+                                   'https://api.census.gov/data/{}/acs/acs{}?get=B05001_002E,B05001_003E,B05001_004E,B05001_005E,B05001_006E,B05001_002M,B05001_003M,B05001_004M,B05001_005M,B05001_006M&for={}&key={}&in=state:{}'],
 }
