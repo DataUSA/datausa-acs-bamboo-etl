@@ -18,7 +18,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         year = params.get('year')
         estimate = params.get('estimate')
-        apis = DICT_APIS['acs_ygc_median_age_by_citizenship_status_by_gender']
+        apis = DICT_APIS['acs_ygcs_median_age_by_citizenship_status_by_gender']
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
             df = read_by_zone(year, geo, estimate, apis, api_key)
