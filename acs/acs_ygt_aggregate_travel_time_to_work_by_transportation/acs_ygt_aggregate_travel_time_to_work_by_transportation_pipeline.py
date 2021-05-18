@@ -18,7 +18,7 @@ class TransformStep(PipelineStep):
     def run_step(self, prev, params):
         year = params.get('year')
         estimate = params.get('estimate')
-        apis = DICT_APIS['acs_health_coverage_s']
+        apis = DICT_APIS['acs_ygt_aggregate_travel_time_to_work_by_transportation']
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
             df = read_by_zone(year, geo, estimate, apis, api_key)
@@ -27,21 +27,21 @@ class TransformStep(PipelineStep):
             df.rename(columns = DICT_RENAME, inplace=True)
 
             list_all = [
-                        [col for col in df.columns if col[0:5] == 'mea_0'], 
-                        [col for col in df.columns if col[0:5] == 'moe_0']
+                        [col for col in df.columns if col[0:3] == 'mea'], 
+                        [col for col in df.columns if col[0:3] == 'moe']
                         ]
 
             df_list = []
     
             for i in list_all:
-                measure = i[0][0:5]
+                measure = i[0][0:3]
                 df_type = df[i].transpose().reset_index()
-             
+            
                 df_type[['measure1', 'dim']] = df_type['index'].str.split("-",expand=True)
-                df_type[['dim_0', 'dim_1']] = df_type['dim'].str.split("_",expand=True)
+                df_type[['dim_0', 'dim_1', 'dim_2']] = df_type['dim'].str.split("_",expand=True)
 
                 df_type.drop(columns = ['index', 'dim'], inplace=True)
-                df_type.set_index(['dim_0', 'dim_1'], inplace=True)
+                df_type.set_index(['dim_0', 'dim_1', 'dim_2'], inplace=True)
                 df_type = df_type.transpose().unstack(level=0).reset_index()
 
                 df_type.rename(columns = {0: measure}, inplace=True)
@@ -49,26 +49,23 @@ class TransformStep(PipelineStep):
 
                 df_list.append(df_type)
                              
-            df_all = pd.merge(df_list[0], df_list[1], on=['dim_0', 'dim_1', 'geoid'])
-            df = df[['mea_1', 'mea_2', 'mea_3', 'mea_4', 'moe_1', 'moe_2', 'moe_3', 'moe_4']].reset_index()
-            
-            df_all = df_all.merge(df, on='geoid', how='left')
+            df_all = pd.merge(df_list[0], df_list[1], on=['dim_0', 'dim_1', 'dim_2', 'geoid'])
             df_all['year'] = year
             return df_all
         
         df_final = pd.DataFrame()
-        list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district'] if estimate == '1' else ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district', 'tract', 'congressional district']
+        list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district']
 
         for zone in list_geo:
             df_geo = transform_by_zone(year, zone, estimate, apis, api_key)
             df_final = df_final.append(df_geo).reset_index(drop=True)
         
-        df_final[['mea_0', 'moe_0', 'mea_1', 'mea_2', 'mea_3', 'mea_4', 'moe_1', 'moe_2', 'moe_3', 'moe_4']] = df_final[['mea_0', 'moe_0', 'mea_1', 'mea_2', 'mea_3', 'mea_4', 'moe_1', 'moe_2', 'moe_3', 'moe_4']].astype(float)
+        df_final[['mea', 'moe']] = df_final[['mea', 'moe']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
-
+        
         return df_final
 
-class AcsHealthCoverageSPipeline(EasyPipeline):
+class AcsYgtAggregateTravelTimeToWorkByTransportationPipeline(EasyPipeline):
     @staticmethod
     def parameter_list():
         return[
@@ -83,32 +80,25 @@ class AcsHealthCoverageSPipeline(EasyPipeline):
         
         dtype = {
             'year': 'smallint',
-            'moe_0': 'float',
-            'moe_1': 'float',
-            'moe_2': 'float',
-            'moe_3': 'float',
-            'moe_4': 'float',
-            'mea_0': 'float',
-            'mea_1': 'float',
-            'mea_2': 'float',
-            'mea_3': 'float',
-            'mea_4': 'float',
+            'moe': 'float',
+            'mea': 'float',
             'dim_0': 'int',
             'dim_1': 'int',
+            'dim_2': 'int',
             'geoid': 'text'
         }
 
         transform_step = TransformStep()
 
         load_step = LoadStep(
-            "acs_health_coverage_s_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid', 'dim_0', 'dim_1'], nullable_list=['mea_0', 'mea_1', 'mea_2', 'mea_3', 'mea_4', 'moe_0', 'moe_1', 'moe_2', 'moe_3', 'moe_4']
+            "acs_ygt_aggregate_travel_time_to_work_by_transportation_{}".format(params.get('estimate')), db_connector, if_exists='append',
+            schema='acs', dtype=dtype, pk=['geoid', 'dim_0', 'dim_1', 'dim_2'], nullable_list=['mea', 'moe']
         )
 
         return [transform_step, load_step]
         
 if __name__ == '__main__':
-    acs_pipeline = AcsHealthCoverageSPipeline()
+    acs_pipeline = AcsYgtAggregateTravelTimeToWorkByTransportationPipeline()
     for estimate in ['1', '5']:
         for year in range(2015, 2019 + 1):
             acs_pipeline.run({
