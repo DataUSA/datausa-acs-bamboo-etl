@@ -46,5 +46,7 @@ DICT_APIS = {
     'acs_ygh_occupied_households_lacking_kitchen': ['https://api.census.gov/data/{}/acs/acs{}?get=B25052_002E,B25052_003E,B25052_002M,B25052_003M&for={}&key={}', 
                                                     'https://api.census.gov/data/{}/acs/acs{}?get=B25052_002E,B25052_003E,B25052_002M,B25052_003M&for={}&key={}&in=state:{}'],
     'acs_ygh_households_with_no_internet_2016': ['https://api.census.gov/data/{}/acs/acs{}?get=B28002_002E,B28002_012E,B28002_013E,B28002_002M,B28002_012M,B28002_013M&for={}&key={}', 
-                                                 'https://api.census.gov/data/{}/acs/acs{}?get=B28002_002E,B28002_012E,B28002_013E,B28002_002M,B28002_012M,B28002_013M&for={}&key={}&in=state:{}']
+                                                 'https://api.census.gov/data/{}/acs/acs{}?get=B28002_002E,B28002_012E,B28002_013E,B28002_002M,B28002_012M,B28002_013M&for={}&key={}&in=state:{}'],
+    'acs_ygh_homeowners_with_mortgage_spending_30_percent_on_costs': ['https://api.census.gov/data/{}/acs/acs{}?get=B25092_002E,B25092_003E,B25092_002M,B25092_003M&for={}&key={}', 
+                                                                      'https://api.census.gov/data/{}/acs/acs{}?get=B25092_002E,B25092_003E,B25092_002M,B25092_003M&for={}&key={}&in=state:{}']
 }
