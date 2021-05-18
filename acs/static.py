@@ -42,5 +42,7 @@ DICT_APIS = {
     'acs_ygmt_mortgage_status_by_real_estate_taxes': ['https://api.census.gov/data/{}/acs/acs{}?get=B25102_003E,B25102_004E,B25102_005E,B25102_006E,B25102_007E,B25102_008E,B25102_010E,B25102_011E,B25102_012E,B25102_013E,B25102_014E,B25102_015E,B25102_003M,B25102_004M,B25102_005M,B25102_006M,B25102_007M,B25102_008M,B25102_010M,B25102_011M,B25102_012M,B25102_013M,B25102_014M,B25102_015M&for={}&key={}', 
                                                       'https://api.census.gov/data/{}/acs/acs{}?get=B25102_003E,B25102_004E,B25102_005E,B25102_006E,B25102_007E,B25102_008E,B25102_010E,B25102_011E,B25102_012E,B25102_013E,B25102_014E,B25102_015E,B25102_003M,B25102_004M,B25102_005M,B25102_006M,B25102_007M,B25102_008M,B25102_010M,B25102_011M,B25102_012M,B25102_013M,B25102_014M,B25102_015M&for={}&key={}&in=state:{}'],
     'acs_ygh_occupied_households_lacking_plumbing': ['https://api.census.gov/data/{}/acs/acs{}?get=B25048_002E,B25048_003E,B25048_002M,B25048_003M&for={}&key={}', 
-                                                     'https://api.census.gov/data/{}/acs/acs{}?get=B25048_002E,B25048_003E,B25048_002M,B25048_003M&for={}&key={}&in=state:{}']
+                                                     'https://api.census.gov/data/{}/acs/acs{}?get=B25048_002E,B25048_003E,B25048_002M,B25048_003M&for={}&key={}&in=state:{}'],
+    'acs_ygh_occupied_households_lacking_kitchen': ['https://api.census.gov/data/{}/acs/acs{}?get=B25052_002E,B25052_003E,B25052_002M,B25052_003M&for={}&key={}', 
+                                                    'https://api.census.gov/data/{}/acs/acs{}?get=B25052_002E,B25052_003E,B25052_002M,B25052_003M&for={}&key={}&in=state:{}']
 }
