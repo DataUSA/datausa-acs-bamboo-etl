@@ -64,7 +64,6 @@ class TransformStep(PipelineStep):
         for zone in list_geo:
             df_geo = transform_by_zone(year, zone, estimate, list_apis, api_key)
             df_final = df_final.append(df_geo).reset_index(drop=True)
-            print(zone, len(df_final))
         
         df_final[['dim_0', 'dim_1', 'dim_2']] = df_final[['dim_0', 'dim_1', 'dim_2']].astype(int)
    
@@ -80,7 +79,6 @@ class TransformStep(PipelineStep):
         df_final[['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1', 'mea_|v|_2', 'moe_|v|_2']] = df_final[['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1', 'mea_|v|_2', 'moe_|v|_2']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
         
-        print(df_final[df_final['geoid'] == '16000US0107000'])
         return df_final
 
 class AcsYgoOccupationForMedianEarningsPipeline(EasyPipeline):
