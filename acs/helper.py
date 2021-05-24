@@ -47,3 +47,8 @@ def create_geoid_in_df(df, geo):
     else:
         df['geoid'] = df.swifter.apply(lambda x: FIPS_CODE[geo] + '{:02d}'.format(int(x['state'])) + '{:05d}'.format(int(x[geo])), axis=1)
     return df
+
+
+def read_file(name):
+    df = pd.read_csv(name)[1::]
+    return df
