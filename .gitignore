@@ -138,5 +138,4 @@ dmypy.json
 cython_debug/
 
 .DS_Store
-*.csv
 *.ipynb
