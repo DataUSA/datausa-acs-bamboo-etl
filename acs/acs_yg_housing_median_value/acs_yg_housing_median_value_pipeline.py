@@ -32,7 +32,6 @@ class TransformStep(PipelineStep):
         list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district'] if estimate == '1' else ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'tract', 'congressional district']
 
         for zone in list_geo:
-            print(zone, estimate)
             df_geo = transform_by_zone(year, zone, estimate, apis, api_key)
             df_final = df_final.append(df_geo).reset_index(drop=True)
 
