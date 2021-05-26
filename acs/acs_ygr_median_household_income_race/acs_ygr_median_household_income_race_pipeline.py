@@ -34,7 +34,7 @@ class TransformStep(PipelineStep):
         ]
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
-            df = read_multiple_files('/Users/jelmyhermosilla/Desktop/Datawheel/datausa/datausa-acs-bamboo-etl/acs/data/B19013/B19013', ['0', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']) if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
+            df = read_multiple_files('/datausa-acs-bamboo-etl/acs/data/B19013/B19013', ['0', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']) if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.set_index('geoid', inplace=True)
             df.rename(columns = DICT_RENAME, inplace=True)
