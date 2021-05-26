@@ -60,6 +60,7 @@ class TransformStep(PipelineStep):
             df_geo = transform_by_zone(year, zone, estimate, apis, api_key)
             df_final = df_final.append(df_geo).reset_index(drop=True)
         
+        df_final[['dim_0', 'dim_1']] = df_final[['dim_0', 'dim_1']].astype(int)
         df_final[['mea', 'moe']] = df_final[['mea', 'moe']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
 

@@ -57,12 +57,13 @@ class TransformStep(PipelineStep):
             return df_all
         
         df_final = pd.DataFrame()
-        list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district'] if estimate == '1' else ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district', 'tract', 'congressional district']
+        list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district'] if estimate == '1' else ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'tract', 'congressional district']
 
         for zone in list_geo:
             df_geo = transform_by_zone(year, zone, estimate, apis, api_key)
             df_final = df_final.append(df_geo).reset_index(drop=True)
         
+        df_final[['dim_0', 'dim_1']] = df_final[['dim_0', 'dim_1']].astype(int)
         df_final[['mea_0', 'moe_0', 'mea_1', 'mea_2', 'mea_3', 'mea_4', 'moe_1', 'moe_2', 'moe_3', 'moe_4']] = df_final[['mea_0', 'moe_0', 'mea_1', 'mea_2', 'mea_3', 'mea_4', 'moe_1', 'moe_2', 'moe_3', 'moe_4']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
 
