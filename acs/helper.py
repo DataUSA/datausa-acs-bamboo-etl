@@ -52,3 +52,13 @@ def create_geoid_in_df(df, geo):
 def read_file(name):
     df = pd.read_csv(name)[1::]
     return df
+
+def read_multiple_files(table, list_file):
+    df_all = pd.DataFrame({'GEO_ID': [], 'NAME': []})
+
+    for i in list_file:
+        name = table + '_{}_2014.csv'.format(i)
+        df = pd.read_csv(name)[1::]
+        df_all = pd.merge(df_all, df, on=['GEO_ID', 'NAME'], how='outer')
+
+    return df_all
