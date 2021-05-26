@@ -45,7 +45,7 @@ class TransformStep(PipelineStep):
         ]
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
-            df = read_multiple_files('/Users/jelmyhermosilla/Desktop/Datawheel/datausa/datausa-acs-bamboo-etl/acs/data/B17001/B17001', ['0', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']) if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
+            df = read_multiple_files('/datausa-acs-bamboo-etl/acs/data/B17001/B17001', ['0', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']) if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.set_index('geoid', inplace=True)
             df.rename(columns = DICT_RENAME, inplace=True)
@@ -83,22 +83,11 @@ class TransformStep(PipelineStep):
         for zone in list_geo:
             df_geo = transform_by_zone(year, zone, estimate, list_apis, api_key)
             df_final = df_final.append(df_geo).reset_index(drop=True)
-            print(zone, len(df_final))
         
         df_final[['dim_0', 'dim_1', 'dim_2', 'race']] = df_final[['dim_0', 'dim_1', 'dim_2', 'race']].astype(int)     
         df_final[['mea', 'moe']] = df_final[['mea', 'moe',]].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
         
-        print(df_final[(df_final['geoid'] == '01000US') & (df_final['race'] == 0)])
-        print(df_final[(df_final['geoid'] == '01000US') & (df_final['race'] == 1)])
-        print(df_final[(df_final['geoid'] == '01000US') & (df_final['race'] == 2)])
-        print(df_final[(df_final['geoid'] == '01000US') & (df_final['race'] == 3)])
-        print(df_final[(df_final['geoid'] == '01000US') & (df_final['race'] == 4)])
-        print(df_final[(df_final['geoid'] == '01000US') & (df_final['race'] == 5)])
-        print(df_final[(df_final['geoid'] == '01000US') & (df_final['race'] == 6)])
-        print(df_final[(df_final['geoid'] == '01000US') & (df_final['race'] == 7)])
-        print(df_final[(df_final['geoid'] == '01000US') & (df_final['race'] == 8)])
-        print(df_final[(df_final['geoid'] == '01000US') & (df_final['race'] == 9)])
         return df_final
 
 class AcsYgpsarPovertyByGenderAgeRacePipeline(EasyPipeline):
