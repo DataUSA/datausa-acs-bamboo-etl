@@ -9,7 +9,7 @@ from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import DownloadStep, LoadStep
 
 from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
-from acs.helper import read_by_zone, create_geoid_in_df
+from acs.helper import read_by_zone, create_geoid_in_df, read_file
 from static import DICT_RENAME
 
 api_key = os.environ['API_KEY']
@@ -21,7 +21,7 @@ class TransformStep(PipelineStep):
         apis = DICT_APIS['acs_ygs_median_age_total']
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
-            df = read_by_zone(year, geo, estimate, apis, api_key)
+            df = read_file('/datausa-acs-bamboo-etl/acs/data/B01002_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.set_index('geoid', inplace=True)
             df.rename(columns = DICT_RENAME, inplace=True)
@@ -97,7 +97,7 @@ class AcsYgsMedianAgeTotalPipeline(EasyPipeline):
         
 if __name__ == '__main__':
     acs_pipeline = AcsYgsMedianAgeTotalPipeline()
-    for estimate in [1, 5]:
+    for estimate in ['1', '5']:
         for year in range(2013, 2019 + 1):
             acs_pipeline.run({
                 'year': year,
