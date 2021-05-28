@@ -102,7 +102,7 @@ class AcsYgfPlaceOfBirthForForeingBornPipeline(EasyPipeline):
         transform_step = TransformStep()
 
         load_step = LoadStep(
-            "acs_ygf_place_of_birth_for_foreing_born_{}".format(params.get('estimate')), db_connector, if_exists='append',
+            "acs_ygf_place_of_birth_for_foreign_born_{}".format(params.get('estimate')), db_connector, if_exists='append',
             schema='acs', dtype=dtype, pk=['geoid', 'dim_0', 'dim_1', 'dim_2', 'dim_3'], nullable_list=['mea', 'moe']
         )
 
