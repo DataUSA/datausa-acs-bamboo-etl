@@ -2,6 +2,8 @@
 
 This repository will have a series of Bamboo pipelines to process and ingest the data from the American Community Survey used in Data USA.
 
+Note: the api for the year 2014, estimate 1 and geographic division for nation does not work correctly so there is a folder with these files downloaded manually.
+
 ## Local Setup
 
 1. Create a new virtual environment and activate it:

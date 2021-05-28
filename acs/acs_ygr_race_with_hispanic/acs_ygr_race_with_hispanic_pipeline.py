@@ -9,7 +9,7 @@ from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import DownloadStep, LoadStep
 
 from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
-from acs.helper import read_by_zone, create_geoid_in_df
+from acs.helper import read_by_zone, create_geoid_in_df, read_file
 from static import DICT_RENAME
 
 api_key = os.environ['API_KEY']
@@ -21,7 +21,7 @@ class TransformStep(PipelineStep):
         apis = DICT_APIS['acs_ygr_race_with_hispanic']
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
-            df = read_by_zone(year, geo, estimate, apis, api_key)
+            df = read_file('/datausa-acs-bamboo-etl/acs/data/B03002_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.set_index('geoid', inplace=True)
             df.rename(columns = DICT_RENAME, inplace=True)
@@ -55,12 +55,12 @@ class TransformStep(PipelineStep):
         
         df_final = pd.DataFrame()
         list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district'] if estimate == '1' else ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'tract', 'congressional district']
-
+     
         for zone in list_geo:
             df_geo = transform_by_zone(year, zone, estimate, apis, api_key)
             df_final = df_final.append(df_geo).reset_index(drop=True)
         
-        df_final[['dim_0', 'dim_1', 'dim_2']] = df_final[['dim_0', 'dim_1'. 'dim_2']].astype(int)
+        df_final[['dim_0', 'dim_1', 'dim_2']] = df_final[['dim_0', 'dim_1', 'dim_2']].astype(int)
         df_final[['mea', 'moe']] = df_final[['mea', 'moe']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
 
