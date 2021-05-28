@@ -9,7 +9,7 @@ from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import DownloadStep, LoadStep
 
 from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
-from acs.helper import create_geoid_in_df
+from acs.helper import create_geoid_in_df, read_file
 from acs.helper_2 import read_by_zone
 from static import DICT_RENAME
 
@@ -26,7 +26,7 @@ class TransformStep(PipelineStep):
         ]
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
-            df = read_by_zone(year, geo, estimate, apis, api_key)
+            df = read_file('/datausa-acs-bamboo-etl/acs/data/B24030_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.set_index('geoid', inplace=True)
             df.rename(columns = DICT_RENAME, inplace=True)
@@ -68,7 +68,7 @@ class TransformStep(PipelineStep):
         df_final[['dim_0', 'dim_1', 'dim_2']] = df_final[['dim_0', 'dim_1', 'dim_2']].astype(int)     
         df_final[['mea', 'moe']] = df_final[['mea', 'moe',]].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
-        
+   
         return df_final
 
 class AcsYgsiGenderByIndustryCPipeline(EasyPipeline):
