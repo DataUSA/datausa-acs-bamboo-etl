@@ -21,8 +21,8 @@ class TransformStep(PipelineStep):
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
             if str(year) == '2014' and estimate == '1' and geo == 'us': 
-                df_B08013 = pd.read_csv('/Users/jelmyhermosilla/Desktop/Datawheel/datausa/datausa-acs-bamboo-etl/acs/data/B08013_2014.csv')[1::]
-                df_B08006 = pd.read_csv('/Users/jelmyhermosilla/Desktop/Datawheel/datausa/datausa-acs-bamboo-etl/acs/data/B08006_2014.csv')[1::]
+                df_B08013 = pd.read_csv('/datausa-acs-bamboo-etl/acs/data/B08013_2014.csv')[1::]
+                df_B08006 = pd.read_csv('/datausa-acs-bamboo-etl/acs/data/B08006_2014.csv')[1::]
 
                 df_B08013 = df_B08013[['GEO_ID', 'B08013_001E']]
                 df_B08006 = df_B08006[['GEO_ID', 'B08006_001E']]
