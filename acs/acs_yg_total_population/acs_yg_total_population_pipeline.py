@@ -9,7 +9,7 @@ from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import DownloadStep, LoadStep
 
 from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
-from acs.helper import read_by_zone, create_geoid_in_df
+from acs.helper import read_by_zone, create_geoid_in_df, read_file
 
 api_key = os.environ['API_KEY']
 
@@ -20,7 +20,7 @@ class TransformStep(PipelineStep):
         apis = DICT_APIS['acs_yg_total_population']
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
-            df = read_by_zone(year, geo, estimate, apis, api_key)
+            df = read_file('/Users/jelmyhermosilla/Desktop/Datawheel/datausa/datausa-acs-bamboo-etl/acs/data/B01003_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.rename(columns = {'B01003_001E': 'mea', 'B01003_001M': 'moe'}, inplace=True)
             df['year'] = year
@@ -35,6 +35,7 @@ class TransformStep(PipelineStep):
             df_geo = transform_by_zone(year, zone, estimate, apis, api_key)
             df_final = df_final.append(df_geo).reset_index(drop=True)
 
+        df_final.replace('*****', np.nan, inplace=True)
         df_final[['mea', 'moe']] = df_final[['mea', 'moe']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
 
@@ -71,7 +72,7 @@ class AcsYgTotalPopulationPipeline(EasyPipeline):
 
 if __name__ == '__main__':
     acs_pipeline = AcsYgTotalPopulationPipeline()
-    for estimate in ['1', '5']:
+    for estimate in ['5']:
         for year in range(2013, 2019 + 1):
             acs_pipeline.run({
                 'year': year,
