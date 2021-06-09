@@ -20,7 +20,7 @@ class TransformStep(PipelineStep):
         apis = DICT_APIS['acs_yg_total_population']
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
-            df = read_file('/Users/jelmyhermosilla/Desktop/Datawheel/datausa/datausa-acs-bamboo-etl/acs/data/B01003_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
+            df = read_file('/datausa-acs-bamboo-etl/acs/data/B01003_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.rename(columns = {'B01003_001E': 'mea', 'B01003_001M': 'moe'}, inplace=True)
             df['year'] = year
