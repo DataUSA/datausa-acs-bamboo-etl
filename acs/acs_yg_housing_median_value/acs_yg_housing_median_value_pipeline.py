@@ -9,7 +9,7 @@ from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import DownloadStep, LoadStep
 
 from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
-from acs.helper import read_by_zone, create_geoid_in_df
+from acs.helper import read_by_zone, create_geoid_in_df, read_file
 
 api_key = os.environ['API_KEY']
 
@@ -20,7 +20,7 @@ class TransformStep(PipelineStep):
         apis = DICT_APIS['acs_yg_housing_median_value']
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
-            df = read_by_zone(year, geo, estimate, apis, api_key)
+            df = read_file('/datausa-acs-bamboo-etl/acs/data/B25077_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.rename(columns = {'B25077_001E': 'mea', 'B25077_001M': 'moe'}, inplace=True)
             df['year'] = year
@@ -37,7 +37,7 @@ class TransformStep(PipelineStep):
 
         df_final[['mea', 'moe']] = df_final[['mea', 'moe']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
- 
+
         return df_final
 
 class AcsYgHousingMedianValuePipeline(EasyPipeline):
@@ -72,7 +72,7 @@ class AcsYgHousingMedianValuePipeline(EasyPipeline):
 if __name__ == '__main__':
     acs_pipeline = AcsYgHousingMedianValuePipeline()
     for estimate in ['1', '5']:
-        for year in range(2013, 2018 + 1):
+        for year in range(2013, 2019 + 1):
             acs_pipeline.run({
                 'year': year,
                 'estimate': estimate,
