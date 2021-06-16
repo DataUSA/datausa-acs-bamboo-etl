@@ -2,6 +2,7 @@ import requests
 import numpy as np
 import pandas as pd
 
+from bamboo_lib.logger import logger
 from acs.static import LIST_STATE, FIPS_CODE
 
 def read_by_zone(year, geo, estimate, apis, api_key):
@@ -16,6 +17,7 @@ def read_by_zone(year, geo, estimate, apis, api_key):
 
         for api in apis:
             url = api[0].format(year, estimate, geo, api_key)
+            logger.info("Downloading {}: {} from API...".format(year, geo))
             r = requests.get(url)
             content = r.json()
             
@@ -30,6 +32,7 @@ def read_by_zone(year, geo, estimate, apis, api_key):
             df = pd.DataFrame({'state':[], 'county':[], geo: []})
             for api in apis:
                 url = api[1].format(year, estimate, geo, api_key, i)
+                logger.info("Downloading {}: {} ({}) from API...".format(year, geo, i))
                 
                 r = requests.get(url)
                 content = r.json()

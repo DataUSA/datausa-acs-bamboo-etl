@@ -1,7 +1,7 @@
 import requests
 import numpy as np
 import pandas as pd
-import swifter
+#import swifter
 
 from bamboo_lib.logger import logger
 from functools import lru_cache
