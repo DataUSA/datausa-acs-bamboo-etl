@@ -2,7 +2,6 @@ import requests
 import numpy as np
 import pandas as pd
 import os
-import swifter
 
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
@@ -45,7 +44,7 @@ class TransformStep(PipelineStep):
         ]
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
-            df = read_multiple_files('/datausa-acs-bamboo-etl/acs/data/B17001/B17001', ['0', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']) if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
+            df = read_multiple_files('/home/deploy/datausa-acs-bamboo-etl/acs/data/B17001/B17001', ['0', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']) if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.set_index('geoid', inplace=True)
             df.rename(columns = DICT_RENAME, inplace=True)
