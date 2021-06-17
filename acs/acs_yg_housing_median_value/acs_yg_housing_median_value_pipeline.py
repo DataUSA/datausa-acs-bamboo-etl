@@ -20,7 +20,7 @@ class TransformStep(PipelineStep):
         apis = DICT_APIS['acs_yg_housing_median_value']
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
-            df = read_file('/datausa-acs-bamboo-etl/acs/data/B25077_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
+            df = read_file('/home/deploy/datausa-acs-bamboo-etl/acs/data/B25077_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.rename(columns = {'B25077_001E': 'mea', 'B25077_001M': 'moe'}, inplace=True)
             df['year'] = year
