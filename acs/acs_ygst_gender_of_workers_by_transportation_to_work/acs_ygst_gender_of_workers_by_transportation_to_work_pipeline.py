@@ -2,7 +2,6 @@ import requests
 import numpy as np
 import pandas as pd
 import os
-import swifter
 
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
@@ -26,7 +25,7 @@ class TransformStep(PipelineStep):
         ]
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
-            df = read_file('/acs/data/B08006_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
+            df = read_file('/home/deploy/datausa-acs-bamboo-etl/acs/data/B08006_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.set_index('geoid', inplace=True)
             df.rename(columns = DICT_RENAME, inplace=True)
@@ -66,7 +65,7 @@ class TransformStep(PipelineStep):
             df_final = df_final.append(df_geo).reset_index(drop=True)
         
         df_final[['dim_0', 'dim_1', 'dim_2', 'dim_3']] = df_final[['dim_0', 'dim_1', 'dim_2', 'dim_3']].astype(int)     
-        df_final[['mea', 'moe']] = df_final[['mea', 'moe',]].astype(float)
+        df_final[['mea', 'moe']] = df_final[['mea', 'moe']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
    
         return df_final
