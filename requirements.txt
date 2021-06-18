@@ -2,4 +2,3 @@ bamboo-lib
 dw-bamboo-cli
 numpy==1.16.2
 pandas==0.24.2
-swifter
