@@ -2,7 +2,6 @@ import requests
 import numpy as np
 import pandas as pd
 import os
- 
 
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
@@ -27,7 +26,7 @@ class TransformStep(PipelineStep):
         ]
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
-            df =  read_file('/acs/data/B24032_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
+            df =  read_file('/home/deploy/datausa-acs-bamboo-etl/acs/data/B24032_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.set_index('geoid', inplace=True)
             df.rename(columns = DICT_RENAME, inplace=True)
@@ -69,8 +68,8 @@ class TransformStep(PipelineStep):
         df_final[['dim_0', 'dim_1', 'dim_2']] = df_final[['dim_0', 'dim_1', 'dim_2']].astype(int)
         list_dim = [2, 3, 9, 10, 13, 14, 16, 17, 18, 20, 21, 23, 24]
 
-        df_final['mea_|v|_0'] = df_final.swifter.apply(lambda x: np.nan if x['dim_2'] in list_dim else x['mea_|v|_1'], axis=1)
-        df_final['moe_|v|_0'] = df_final.swifter.apply(lambda x: np.nan if x['dim_2'] in list_dim else x['moe_|v|_1'], axis=1)
+        df_final['mea_|v|_0'] = df_final.apply(lambda x: np.nan if x['dim_2'] in list_dim else x['mea_|v|_1'], axis=1)
+        df_final['moe_|v|_0'] = df_final.apply(lambda x: np.nan if x['dim_2'] in list_dim else x['moe_|v|_1'], axis=1)
         
         df_final[['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1']] = df_final[['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
