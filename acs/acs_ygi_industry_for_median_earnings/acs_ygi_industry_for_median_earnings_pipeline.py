@@ -68,8 +68,8 @@ class TransformStep(PipelineStep):
         df_final[['dim_0', 'dim_1']] = df_final[['dim_0', 'dim_1']].astype(int)
         list_dim = [2, 3, 9, 10, 13, 14, 16, 17, 18, 20, 21, 23, 24]
 
-        df_final['mea_|v|_0'] = df_final.swifter.apply(lambda x: np.nan if x['dim_1'] in list_dim else x['mea_|v|_1'], axis=1)
-        df_final['moe_|v|_0'] = df_final.swifter.apply(lambda x: np.nan if x['dim_1'] in list_dim else x['moe_|v|_1'], axis=1)
+        df_final['mea_|v|_0'] = df_final.apply(lambda x: np.nan if x['dim_1'] in list_dim else x['mea_|v|_1'], axis=1)
+        df_final['moe_|v|_0'] = df_final.apply(lambda x: np.nan if x['dim_1'] in list_dim else x['moe_|v|_1'], axis=1)
         
         df_final[['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1']] = df_final[['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)

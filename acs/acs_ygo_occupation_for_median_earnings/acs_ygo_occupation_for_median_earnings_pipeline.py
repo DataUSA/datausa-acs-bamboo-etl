@@ -70,11 +70,11 @@ class TransformStep(PipelineStep):
         list_dim_0 = [0, 1, 17, 25, 28, 32]
         list_dim_1 = [0, 1, 2, 5, 9, 14, 17, 19, 25, 28, 32]
 
-        df_final['mea_|v|_0'] = df_final.swifter.apply(lambda x: x['mea_|v|_2'] if x['dim_2'] in list_dim_0 else np.nan, axis=1)
-        df_final['moe_|v|_0'] = df_final.swifter.apply(lambda x: x['moe_|v|_2'] if x['dim_2'] in list_dim_0 else np.nan, axis=1)
+        df_final['mea_|v|_0'] = df_final.apply(lambda x: x['mea_|v|_2'] if x['dim_2'] in list_dim_0 else np.nan, axis=1)
+        df_final['moe_|v|_0'] = df_final.apply(lambda x: x['moe_|v|_2'] if x['dim_2'] in list_dim_0 else np.nan, axis=1)
 
-        df_final['mea_|v|_1'] = df_final.swifter.apply(lambda x: x['mea_|v|_2'] if x['dim_2'] in list_dim_1 else np.nan, axis=1)
-        df_final['moe_|v|_1'] = df_final.swifter.apply(lambda x: x['moe_|v|_2'] if x['dim_2'] in list_dim_1 else np.nan, axis=1)
+        df_final['mea_|v|_1'] = df_final.apply(lambda x: x['mea_|v|_2'] if x['dim_2'] in list_dim_1 else np.nan, axis=1)
+        df_final['moe_|v|_1'] = df_final.apply(lambda x: x['moe_|v|_2'] if x['dim_2'] in list_dim_1 else np.nan, axis=1)
         
         df_final[['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1', 'mea_|v|_2', 'moe_|v|_2']] = df_final[['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1', 'mea_|v|_2', 'moe_|v|_2']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
