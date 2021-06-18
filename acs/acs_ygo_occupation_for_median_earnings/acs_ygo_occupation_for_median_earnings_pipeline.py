@@ -2,7 +2,6 @@ import requests
 import numpy as np
 import pandas as pd
 import os
- 
 
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
