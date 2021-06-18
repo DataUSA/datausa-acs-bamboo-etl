@@ -2,8 +2,7 @@ import requests
 import numpy as np
 import pandas as pd
 import os
-import swifter
-
+ 
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import DownloadStep, LoadStep
