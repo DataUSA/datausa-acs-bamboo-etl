@@ -2,7 +2,6 @@ import requests
 import numpy as np
 import pandas as pd
 import os
- 
 
 from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
@@ -27,7 +26,7 @@ class TransformStep(PipelineStep):
         ]
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
-            df = read_file('/acs/data/B24012_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
+            df = read_file('/home/deploy/datausa-acs-bamboo-etl/acs/data/B24012_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.set_index('geoid', inplace=True)
             df.rename(columns = DICT_RENAME, inplace=True)
@@ -70,11 +69,11 @@ class TransformStep(PipelineStep):
         list_dim_0 = [0, 1, 17, 25, 28, 32]
         list_dim_1 = [0, 1, 2, 5, 9, 14, 17, 19, 25, 28, 32]
 
-        df_final['mea_|v|_0'] = df_final.swifter.apply(lambda x: x['mea_|v|_2'] if x['dim_3'] in list_dim_0 else np.nan, axis=1)
-        df_final['moe_|v|_0'] = df_final.swifter.apply(lambda x: x['moe_|v|_2'] if x['dim_3'] in list_dim_0 else np.nan, axis=1)
+        df_final['mea_|v|_0'] = df_final.apply(lambda x: x['mea_|v|_2'] if x['dim_3'] in list_dim_0 else np.nan, axis=1)
+        df_final['moe_|v|_0'] = df_final.apply(lambda x: x['moe_|v|_2'] if x['dim_3'] in list_dim_0 else np.nan, axis=1)
 
-        df_final['mea_|v|_1'] = df_final.swifter.apply(lambda x: x['mea_|v|_2'] if x['dim_3'] in list_dim_1 else np.nan, axis=1)
-        df_final['moe_|v|_1'] = df_final.swifter.apply(lambda x: x['moe_|v|_2'] if x['dim_3'] in list_dim_1 else np.nan, axis=1)
+        df_final['mea_|v|_1'] = df_final.apply(lambda x: x['mea_|v|_2'] if x['dim_3'] in list_dim_1 else np.nan, axis=1)
+        df_final['moe_|v|_1'] = df_final.apply(lambda x: x['moe_|v|_2'] if x['dim_3'] in list_dim_1 else np.nan, axis=1)
 
         df_final[['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1', 'mea_|v|_2', 'moe_|v|_2']] = df_final[['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1', 'mea_|v|_2', 'moe_|v|_2']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
