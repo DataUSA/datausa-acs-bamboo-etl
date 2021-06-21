@@ -69,13 +69,13 @@ class TransformStep(PipelineStep):
         list_dim_0 = [0, 1, 17, 25, 28, 32]
         list_dim_1 = [0, 1, 2, 5, 9, 14, 17, 19, 25, 28, 32]
 
-        df_final['mea_|v|_0'] = df_final.apply(lambda x: x['mea_|v|_2'] if x['dim_3'] in list_dim_0 else np.nan, axis=1)
-        df_final['moe_|v|_0'] = df_final.apply(lambda x: x['moe_|v|_2'] if x['dim_3'] in list_dim_0 else np.nan, axis=1)
+        df_final['mea_lvl_0'] = df_final.apply(lambda x: x['mea_lvl_2'] if x['dim_3'] in list_dim_0 else np.nan, axis=1)
+        df_final['moe_lvl_0'] = df_final.apply(lambda x: x['moe_lvl_2'] if x['dim_3'] in list_dim_0 else np.nan, axis=1)
 
-        df_final['mea_|v|_1'] = df_final.apply(lambda x: x['mea_|v|_2'] if x['dim_3'] in list_dim_1 else np.nan, axis=1)
-        df_final['moe_|v|_1'] = df_final.apply(lambda x: x['moe_|v|_2'] if x['dim_3'] in list_dim_1 else np.nan, axis=1)
+        df_final['mea_lvl_1'] = df_final.apply(lambda x: x['mea_lvl_2'] if x['dim_3'] in list_dim_1 else np.nan, axis=1)
+        df_final['moe_lvl_1'] = df_final.apply(lambda x: x['moe_lvl_2'] if x['dim_3'] in list_dim_1 else np.nan, axis=1)
 
-        df_final[['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1', 'mea_|v|_2', 'moe_|v|_2']] = df_final[['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1', 'mea_|v|_2', 'moe_|v|_2']].astype(float)
+        df_final[['mea_lvl_0', 'moe_lvl_0', 'mea_lvl_1', 'moe_lvl_1', 'mea_lvl_2', 'moe_lvl_2']] = df_final[['mea_lvl_0', 'moe_lvl_0', 'mea_lvl_1', 'moe_lvl_1', 'mea_lvl_2', 'moe_lvl_2']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
     
         return df_final
@@ -99,12 +99,12 @@ class AcsYgsoGenderByOccupationForMedianEarningsPipeline(EasyPipeline):
             'dim_1': 'int',
             'dim_2': 'int',
             'dim_3': 'int',
-            'moe_|v|_0': 'float',
-            'mea_|v|_0': 'float',
-            'moe_|v|_1': 'float',
-            'mea_|v|_1': 'float',
-            'moe_|v|_2': 'float',
-            'mea_|v|_2': 'float',
+            'moe_lvl_0': 'float',
+            'mea_lvl_0': 'float',
+            'moe_lvl_1': 'float',
+            'mea_lvl_1': 'float',
+            'moe_lvl_2': 'float',
+            'mea_lvl_2': 'float',
             'geoid': 'text'
         }
 
@@ -112,7 +112,7 @@ class AcsYgsoGenderByOccupationForMedianEarningsPipeline(EasyPipeline):
 
         load_step = LoadStep(
             "acs_ygso_gender_by_occupation_for_median_earnings_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid', 'dim_0', 'dim_1', 'dim_2', 'dim_3'], nullable_list=['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1', 'mea_|v|_2', 'moe_|v|_2']
+            schema='acs', dtype=dtype, pk=['geoid', 'dim_0', 'dim_1', 'dim_2', 'dim_3'], nullable_list=['mea_lvl_0', 'moe_lvl_0', 'mea_lvl_1', 'moe_lvl_1', 'mea_lvl_2', 'moe_lvl_2']
         )
 
         return [transform_step, load_step]

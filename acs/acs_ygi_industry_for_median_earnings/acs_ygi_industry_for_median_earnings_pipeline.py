@@ -68,10 +68,10 @@ class TransformStep(PipelineStep):
         df_final[['dim_0', 'dim_1']] = df_final[['dim_0', 'dim_1']].astype(int)
         list_dim = [2, 3, 9, 10, 13, 14, 16, 17, 18, 20, 21, 23, 24]
 
-        df_final['mea_|v|_0'] = df_final.apply(lambda x: np.nan if x['dim_1'] in list_dim else x['mea_|v|_1'], axis=1)
-        df_final['moe_|v|_0'] = df_final.apply(lambda x: np.nan if x['dim_1'] in list_dim else x['moe_|v|_1'], axis=1)
+        df_final['mea_lvl_0'] = df_final.apply(lambda x: np.nan if x['dim_1'] in list_dim else x['mea_lvl_1'], axis=1)
+        df_final['moe_lvl_0'] = df_final.apply(lambda x: np.nan if x['dim_1'] in list_dim else x['moe_lvl_1'], axis=1)
         
-        df_final[['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1']] = df_final[['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1']].astype(float)
+        df_final[['mea_lvl_0', 'moe_lvl_0', 'mea_lvl_1', 'moe_lvl_1']] = df_final[['mea_lvl_0', 'moe_lvl_0', 'mea_lvl_1', 'moe_lvl_1']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
         
         return df_final
@@ -91,10 +91,10 @@ class AcsYgiIndustryForMedianEarningsPipeline(EasyPipeline):
         
         dtype = {
             'year': 'smallint',
-            'moe_|v|_0': 'float',
-            'mea_|v|_0': 'float',
-            'moe_|v|_1': 'float',
-            'mea_|v|_1': 'float',
+            'moe_lvl_0': 'float',
+            'mea_lvl_0': 'float',
+            'moe_lvl_1': 'float',
+            'mea_lvl_1': 'float',
             'dim_0': 'int',
             'dim_1': 'int',
             'geoid': 'text'
@@ -104,7 +104,7 @@ class AcsYgiIndustryForMedianEarningsPipeline(EasyPipeline):
 
         load_step = LoadStep(
             "acs_ygi_industry_for_median_earnings_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid', 'dim_0', 'dim_1'], nullable_list=['mea_|v|_0', 'moe_|v|_0', 'mea_|v|_1', 'moe_|v|_1']
+            schema='acs', dtype=dtype, pk=['geoid', 'dim_0', 'dim_1'], nullable_list=['mea_lvl_0', 'moe_lvl_0', 'mea_lvl_1', 'moe_lvl_1']
         )
 
         return [transform_step, load_step]
