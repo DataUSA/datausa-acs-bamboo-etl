@@ -21,12 +21,12 @@ class TransformStep(PipelineStep):
         estimate = params.get('estimate')
 
         list_apis = [
-            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_1'], 
-            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_2'], 
-            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_3'],
-            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_4'],
-            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_5'],
-            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_6']
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_1_2019'], 
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_2_2019'], 
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_3_2019'],
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_4_2019'],
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_5_2019'],
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_6_2019']
         ]
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
@@ -111,9 +111,8 @@ class AcsYgfPlaceOfBirthForForeingBornPipeline(EasyPipeline):
 if __name__ == '__main__':
     acs_pipeline = AcsYgfPlaceOfBirthForForeingBornPipeline()
     for estimate in ['1', '5']:
-        for year in range(2015, 2018 + 1):
-            acs_pipeline.run({
-                'year': year,
-                'estimate': estimate,
-                'server': 'monet-backend'
-            })
+        acs_pipeline.run({
+            'year': 2019,
+            'estimate': estimate,
+            'server': 'monet-backend'
+        })
