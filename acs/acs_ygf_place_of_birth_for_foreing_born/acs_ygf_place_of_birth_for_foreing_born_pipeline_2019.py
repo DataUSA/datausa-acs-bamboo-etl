@@ -36,8 +36,14 @@ class TransformStep(PipelineStep):
             df = read_by_zone(year, geo, estimate, apis, api_key)
 
             ########## Fix for 2019 #####################
+            print(df.head())
+            input("Continue...")
             df = add_cols_2019(df)
+            print(df.head())
+            input("Continue...")
             df = change_cols_2019(df, COL_CHANGES_2019)
+            print(df.head())
+            input("Continue...")
             #############################################
 
             df = create_geoid_in_df(df, geo)
