@@ -11,7 +11,9 @@ from bamboo_lib.steps import DownloadStep, LoadStep
 from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
 from acs.helper import create_geoid_in_df
 from acs.helper_2 import read_by_zone
-from static import DICT_RENAME
+from static import DICT_RENAME, COL_CHANGES_2019
+
+from helper import add_cols_2019, change_cols_2019
 
 api_key = os.environ['API_KEY']
 
@@ -31,6 +33,12 @@ class TransformStep(PipelineStep):
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
             df = read_by_zone(year, geo, estimate, apis, api_key)
+
+            ########## Fix for 2019 #####################
+            df = add_cols_2019(df)
+            df = change_cols_2019(df, COL_CHANGES_2019)
+            #############################################
+
             df = create_geoid_in_df(df, geo)
             df.set_index('geoid', inplace=True)
             df.rename(columns = DICT_RENAME, inplace=True)
