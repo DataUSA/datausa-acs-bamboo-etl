@@ -14,6 +14,7 @@ from acs.helper_2 import read_by_zone
 from static import DICT_RENAME, COL_CHANGES_2019
 
 from helper import add_cols_2019, change_cols_2019
+pd.options.display.max_columns = 200
 
 api_key = os.environ['API_KEY']
 

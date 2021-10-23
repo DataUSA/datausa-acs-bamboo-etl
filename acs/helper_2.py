@@ -22,6 +22,7 @@ def read_by_zone(year, geo, estimate, apis, api_key):
             content = r.json()
             
             df = pd.DataFrame(content[1::], columns=content[0])
+            print(df.head())
             df_all = pd.merge(df, df_all, on=merge, how='outer') 
 
     else:
