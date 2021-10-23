@@ -43,6 +43,6 @@ def change_cols_2019(df, change_dict):
         for k in change_dict.keys()
     }
 
-    df = df.rename(columns=mapping_dict, errors="raise")
+    df = df.rename(columns=mapping_dict)
 
     return df
