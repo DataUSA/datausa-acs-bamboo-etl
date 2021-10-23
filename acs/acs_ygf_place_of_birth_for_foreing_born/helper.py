@@ -38,8 +38,11 @@ def change_cols_2019(df, change_dict):
     mapping_dict = {
         "B05006_{}E".format(str(k).zfill(3)): "B05006_{}E".format(str(change_dict[k]).zfill(3)) 
         for k in change_dict.keys()
+    } + {
+        "B05006_{}M".format(str(k).zfill(3)): "B05006_{}M".format(str(change_dict[k]).zfill(3)) 
+        for k in change_dict.keys()
     }
 
-    df = df.rename(columns=mapping_dict)
+    df = df.rename(columns=mapping_dict, errors="raise")
 
     return df
