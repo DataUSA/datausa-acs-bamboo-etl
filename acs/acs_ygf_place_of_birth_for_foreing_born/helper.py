@@ -1,4 +1,7 @@
 def add_cols_2019(df):
+    for col in df.columns:
+        df[col] = df[col].astype(int) 
+
     if "B05006_099E" in df.columns:
         df["B05006_099E"] = df["B05006_097E"] + df["B05006_098E"] + df["B05006_099E"]
         df = df.drop(columns=["B05006_097E","B05006_098E"])
