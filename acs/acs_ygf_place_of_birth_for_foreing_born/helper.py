@@ -1,5 +1,11 @@
 def add_cols_2019(df):
-    for col in df.columns:
+    special_cols = [
+        "B05006_097E","B05006_098E","B05006_099E","B05006_097M","B05006_098M","B05006_099M",
+        "B05006_102E","B05006_103E","B05006_104E","B05006_102M","B05006_103M","B05006_104M",
+        "B05006_118E","B05006_120E","B05006_118M","B05006_120M","B05006_127E","B05006_128E",
+        "B05006_127M","B05006_128M"]
+    
+    for col in special_cols:
         df[col] = df[col].astype(float) 
 
     if "B05006_099E" in df.columns:
