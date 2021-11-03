@@ -29,7 +29,8 @@ class TransformStep(PipelineStep):
             DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_3_2019'],
             DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_4_2019'],
             DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_5_2019'],
-            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_6_2019']
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_6_2019'],
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_7_2019']
         ]
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
@@ -118,7 +119,7 @@ class AcsYgfPlaceOfBirthForForeingBornPipeline(EasyPipeline):
 
         load_step = LoadStep(
             "acs_ygf_place_of_birth_for_foreign_born_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid', 'dim_0', 'dim_1', 'dim_2', 'dim_3'], nullable_list=['mea', 'moe']
+         schema='acs', dtype=dtype, pk=['geoid', 'dim_0', 'dim_1', 'dim_2', 'dim_3'], nullable_list=['mea', 'moe']
         )
 
         return [transform_step, load_step]
