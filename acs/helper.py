@@ -22,6 +22,7 @@ def read_by_zone(year, geo, estimate, apis, api_key):
     
     else:
         df = pd.DataFrame()
+        print("aqui")
         
         for i in LIST_STATE:
             url = apis[1].format(year, estimate, geo, api_key, i)
@@ -71,3 +72,9 @@ def read_multiple_files(table, list_file):
         df_all = pd.merge(df_all, df, on=['GEO_ID', 'NAME'], how='outer')
 
     return df_all
+
+def empty_str_replace(string):
+    try:
+        return float(string)
+    except ValueError:
+        return np.nan
