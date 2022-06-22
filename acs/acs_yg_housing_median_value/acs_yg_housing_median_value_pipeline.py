@@ -72,7 +72,7 @@ class AcsYgHousingMedianValuePipeline(EasyPipeline):
 if __name__ == '__main__':
     acs_pipeline = AcsYgHousingMedianValuePipeline()
     for estimate in ['1', '5']:
-        for year in range(2013, 2019 + 1):
+        for year in range(2013, 2020 + 1):
             if year == 2020 and estimate == "1":
                 continue
             else:

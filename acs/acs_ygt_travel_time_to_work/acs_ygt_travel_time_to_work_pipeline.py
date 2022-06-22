@@ -98,7 +98,7 @@ class AcsYgtTravelTimeToWorkPipeline(EasyPipeline):
 if __name__ == '__main__':
     acs_pipeline = AcsYgtTravelTimeToWorkPipeline()
     for estimate in ['1', '5']:
-        for year in range(2013, 2019 + 1):
+        for year in range(2013, 2020 + 1):
             acs_pipeline.run({
                 'year': year,
                 'estimate': estimate,
