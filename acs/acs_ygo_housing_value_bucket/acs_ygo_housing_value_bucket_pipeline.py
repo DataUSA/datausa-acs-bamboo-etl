@@ -102,9 +102,12 @@ class AcsYgohousingValueBucketPipeline(EasyPipeline):
 if __name__ == '__main__':
     acs_pipeline = AcsYgohousingValueBucketPipeline()
     for estimate in ['1', '5']:
-        for year in range(2015, 2019 + 1):
-            acs_pipeline.run({
-                'year': year,
-                'estimate': estimate,
-                'server': 'monet-backend'
-            })
+        for year in range(2015, 2020 + 1):
+            if year == 2020 and estimate == '1':
+                continue
+            else:
+                acs_pipeline.run({
+                    'year': year,
+                    'estimate': estimate,
+                    'server': 'monet-backend'
+                })

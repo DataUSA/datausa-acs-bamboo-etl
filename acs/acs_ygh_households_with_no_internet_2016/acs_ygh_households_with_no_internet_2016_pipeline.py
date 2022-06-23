@@ -99,9 +99,12 @@ if __name__ == '__main__':
     acs_pipeline = AcsYghHouseholdsWithNoInternet2016Pipeline()
     for estimate in ['1', '5']:
         init = 2016 if estimate == '1' else 2017
-        for year in range(init, 2019 + 1):
-            acs_pipeline.run({
-                'year': year,
-                'estimate': estimate,
-                'server': 'monet-backend'
-            })
+        for year in range(init, 2020 + 1):
+            if year == 2020 and estimate == "1":
+                continue
+            else:
+                acs_pipeline.run({
+                    'year': year,
+                    'estimate': estimate,
+                    'server': 'monet-backend'
+                })
