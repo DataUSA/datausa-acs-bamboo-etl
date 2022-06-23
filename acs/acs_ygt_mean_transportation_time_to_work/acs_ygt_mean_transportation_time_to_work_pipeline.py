@@ -8,7 +8,7 @@ from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import DownloadStep, LoadStep
 
 from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
-from acs.helper import read_by_zone, create_geoid_in_df
+from acs.helper import read_by_zone, create_geoid_in_df, empty_str_replace
 
 api_key = os.environ['API_KEY']
 
@@ -24,7 +24,7 @@ class TransformStep(PipelineStep):
                 df_B08006 = pd.read_csv('/home/deploy/datausa-acs-bamboo-etl/acs/data/B08006_2014.csv')[1::]
 
                 df_B08013 = df_B08013[['GEO_ID', 'B08013_001E']]
-                df_B08006 = df_B08006[['GEO_ID', 'B08006_001E']]
+                df_B08006 = df_B08006[['GEO_ID', 'B08006_001E', 'B08006_017E']]
             
                 df = pd.merge(df_B08013, df_B08006, on=['GEO_ID'])
 
@@ -33,11 +33,13 @@ class TransformStep(PipelineStep):
 
             df = create_geoid_in_df(df, geo)
     
-            df[['B08013_001E', 'B08006_001E']] = df[['B08013_001E', 'B08006_001E']].astype(float)
+            df[['B08013_001E', 'B08006_001E','B08006_017E']] = df[['B08013_001E', 'B08006_001E','B08006_017E']].astype(float)
             df.replace(NULL_LIST, np.nan, inplace=True)
 
-            df['mea'] = df.apply(lambda x: x['B08013_001E'] / x['B08006_001E'] if x['B08013_001E'] != np.nan and x['B08006_001E'] != np.nan and x['B08006_001E'] != 0 else np.nan, axis=1) 
+            df['mea'] = df.apply(lambda x: x['B08013_001E'] / (x['B08006_001E'] - x['B08006_017E']) if x['B08013_001E'] != np.nan and x['B08006_001E'] != np.nan and x['B08006_017E']!= np.nan and (x['B08006_001E'] - x['B08006_017E']) != 0 else np.nan, axis=1)
             df['moe'] = np.nan
+
+            df['mea'] = df['mea'].apply(lambda x: empty_str_replace(x))
 
             df['year'] = year
             df = df[['moe', 'mea', 'year', 'geoid']]
@@ -75,12 +77,12 @@ class AcsYgtMeanTransportationTimeToWorkPipeline(EasyPipeline):
             'mea': 'float',
             'geoid': 'text'
         }
+        
 
         transform_step = TransformStep()
 
         load_step = LoadStep(
-            "acs_ygt_mean_transportation_time_to_work_{}".format(params.get('estimate')), db_connector, if_exists = 'append',
-            schema= 'acs', dtype = dtype, pk = ['geoid'], nullable_list=['moe', 'mea']
+            "acs_ygt_mean_transportation_time_to_work_{}".format(params.get('estimate')), db_connector, if_exists = 'append',schema= 'acs', dtype = dtype, pk = ['geoid'], nullable_list=['moe', 'mea']
         )
 
         return [transform_step, load_step]
@@ -88,9 +90,12 @@ class AcsYgtMeanTransportationTimeToWorkPipeline(EasyPipeline):
 if __name__ == '__main__':
     acs_pipeline = AcsYgtMeanTransportationTimeToWorkPipeline()
     for estimate in ['1', '5']:
-        for year in range(2013, 2019 + 1):
-            acs_pipeline.run({
-                'year': year,
-                'estimate': estimate,
-                'server': 'monet-backend'
-            })
+        for year in range(2013, 2020 + 1):
+            if estimate == '1' and year ==2020:
+                continue
+            else:
+                acs_pipeline.run({
+                    'year': year,
+                    'estimate': estimate,
+                    'server': 'monet-backend'
+                })
