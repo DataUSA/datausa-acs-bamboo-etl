@@ -127,8 +127,12 @@ class AcsYgfPlaceOfBirthForForeingBornPipeline(EasyPipeline):
 if __name__ == '__main__':
     acs_pipeline = AcsYgfPlaceOfBirthForForeingBornPipeline()
     for estimate in ['1', '5']:
-        acs_pipeline.run({
-            'year': 2019,
-            'estimate': estimate,
-            'server': 'monet-backend'
-        })
+        for year in range(2019, 2020 + 1):
+            if year == 2020 and estimate=='1':
+                continue
+            else:
+                acs_pipeline.run({
+                    'year': year,
+                    'estimate': estimate,
+                    'server': 'monet-backend'
+                })
