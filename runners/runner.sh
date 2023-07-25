@@ -1,18 +1,19 @@
 #!/bin/bash
 
-# Parse arguments (3)
-if [ $# -ne 3 ]; then
-  echo "Usage: $0 <DATAUSA_PATH> <SERVER> <YEAR>"
+# Parse arguments (4)
+if [ $# -ne 4 ]; then
+  echo "Usage: $0 <DATAUSA_PATH> <VENV_PATH> <SERVER> <YEAR>"
   exit 1
 fi
 
 # Assign arguments to variables
 export DATAUSA_PATH="$1" # ex. /code/datausa/datausa-acs-bamboo-etl
-export SERVERS="$2" # ex. postgres-zcube or monet-backend
-export YEAR="$3" # ex. 2021
+export VENV_PATH="$2" # ex. ~/venv
+export SERVERS="$3" # ex. postgres-zcube or monet-backend
+export YEAR="$4" # ex. 2021
 
 
-export SERVERS=("$2")
+export SERVERS=("$3")
 export ESTIMATES=("1" "5")
 export PP_YEAR=$YEAR;
 export PYTHON_FILES=$(find "$DATAUSA_PATH/acs" -type f -name "*_pipeline.py")
@@ -31,7 +32,7 @@ for SERVER in "${SERVERS[@]}"; do
             export PIPELINE_NAME=${FILE_NAME%%_pipeline}
             echo Running-$PIPELINE_NAME;
             echo ;
-            screen -S "$PIPELINE_NAME-$SERVER-$ESTIMATE" -L -Logfile "$DATAUSA_PATH/runners/logs/$SERVER/$ESTIMATE/$PP_YEAR/$PIPELINE_NAME-$SERVER-$ESTIMATE.log" bash -c "export PIPELINE_NAME=$PIPELINE_NAME;export SERVER=$SERVER;export ESTIMATE=$ESTIMATE;export PP_YEAR=$PP_YEAR;export FILE_NAME=$FILE_NAME;source $DATAUSA_PATH/venv/bin/activate;source $DATAUSA_PATH/.env;cd $PIPELINE_DIR;bamboo-cli --folder . --entry $FILE_NAME --year=$PP_YEAR --estimate=$ESTIMATE --server=$SERVER;";
+            screen -S "$PIPELINE_NAME-$SERVER-$ESTIMATE" -L -Logfile "$DATAUSA_PATH/runners/logs/$SERVER/$ESTIMATE/$PP_YEAR/$PIPELINE_NAME-$SERVER-$ESTIMATE.log" bash -c "export PIPELINE_NAME=$PIPELINE_NAME;export SERVER=$SERVER;export ESTIMATE=$ESTIMATE;export PP_YEAR=$PP_YEAR;export FILE_NAME=$FILE_NAME;source $VENV_PATH/bin/activate;source $DATAUSA_PATH/.env;cd $PIPELINE_DIR;bamboo-cli --folder . --entry $FILE_NAME --year=$PP_YEAR --estimate=$ESTIMATE --server=$SERVER;";
             echo Done Running-$PIPELINE_NAME;
         done
     done
