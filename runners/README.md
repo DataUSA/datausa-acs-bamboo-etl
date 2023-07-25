@@ -44,3 +44,25 @@ $ screen -r datausa
 # Now you should be back
 ```
 
+### Data checks
+To confirm that the ingestion process was succesful, you need to check all logs located on `/runners/logs/*`. Those are separated in folders, by server, acs estimate and year:
+
+```bash
+├── logs
+│   ├── monet-backend
+│   │   ├── 1
+│   │   │   └── 2021
+│   │   └── 5
+│   │       └── 2021
+│   └── postgres-zcube
+│       ├── 1
+│       │   └── 2021
+│       └── 5
+│           └── 2021
+```
+
+You can copy these files to your file system using `scp` and check them there or you can use the VS-Code SSH Extension to navigate those files with an UI directly from the server.
+
+
+# Questions
+If there's a question about this ask me at `nicolas.netz@datawheel.us`
