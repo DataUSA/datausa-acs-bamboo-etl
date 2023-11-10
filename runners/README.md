@@ -21,13 +21,14 @@ The script takes three parameters:
 2. VENV_PATH: Path in filesystem to venv. ex. ~/venv
 3. SERVERS: Servers to point to. ex. postgres-zcube or monet-backend
 4. YEAR: Year to be ingested. ex. 2021.
+5. ESTIMATES: Estimate to be ingested. Ex. 5 or 1.
 
 To run the script, create a screen session, and go to the repository. Then execute the script:
 ```bash
 $ screen -S datausa
 $ cd /path/to/datausa-acs-bamboo-etl
 # ingest 2021 to postgres
-$ bash runners/runner.sh /code/datausa/datausa-acs-bamboo-etl/ ~/venv postgres-zcube 2021
+$ bash runners/runner.sh /code/datausa/datausa-acs-bamboo-etl/ ~/venv postgres-zcube 2021 5
 # The script should start. You should see some terminal output as:
 
 INFO:bamboo_lib.logger:Received parameter with key=year and value=2021
