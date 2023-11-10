@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Parse arguments (4)
-if [ $# -ne 4 ]; then
-  echo "Usage: $0 <DATAUSA_PATH> <VENV_PATH> <SERVER> <YEAR>"
+# Parse arguments (5)
+if [ $# -ne 5 ]; then
+  echo "Usage: $0 <DATAUSA_PATH> <VENV_PATH> <SERVER> <YEAR> <ESTIMATE>"
   exit 1
 fi
 
@@ -11,10 +11,11 @@ export DATAUSA_PATH="$1" # ex. /code/datausa/datausa-acs-bamboo-etl
 export VENV_PATH="$2" # ex. ~/venv
 export SERVERS="$3" # ex. postgres-zcube or monet-backend
 export YEAR="$4" # ex. 2021
+export ESTIMATES="$5"
 
 
 export SERVERS=("$3")
-export ESTIMATES=("1" "5")
+export ESTIMATES=("$5")
 export PP_YEAR=$YEAR;
 export PYTHON_FILES=$(find "$DATAUSA_PATH/acs" -type f -name "*_pipeline.py")
 
