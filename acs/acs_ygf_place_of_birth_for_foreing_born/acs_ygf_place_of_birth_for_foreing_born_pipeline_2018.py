@@ -11,10 +11,7 @@ from bamboo_lib.steps import DownloadStep, LoadStep
 from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
 from acs.helper import create_geoid_in_df
 from acs.helper_2 import read_by_zone
-from static import DICT_RENAME, COL_CHANGES_2019
-
-from helper import add_cols_2019, change_cols_2019
-pd.options.display.max_columns = 200
+from static import DICT_RENAME
 
 api_key = os.environ['API_KEY']
 
@@ -24,29 +21,16 @@ class TransformStep(PipelineStep):
         estimate = params.get('estimate')
 
         list_apis = [
-            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_1_2019'], 
-            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_2_2019'], 
-            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_3_2019'],
-            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_4_2019'],
-            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_5_2019'],
-            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_6_2019'],
-            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_7_2019']
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_1'], 
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_2'], 
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_3'],
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_4'],
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_5'],
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_6']
         ]
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
             df = read_by_zone(year, geo, estimate, apis, api_key)
-
-            ########## Fix for 2019 #####################
-            #print(df.head())
-            #input("Continue...")
-            df = add_cols_2019(df)
-            #print(df.head())
-            #input("Continue...")
-            df = change_cols_2019(df, COL_CHANGES_2019)
-            #print(df.head())
-            #input("Continue...")
-            #############################################
-
             df = create_geoid_in_df(df, geo)
             df.set_index('geoid', inplace=True)
             df.rename(columns = DICT_RENAME, inplace=True)
@@ -119,7 +103,7 @@ class AcsYgfPlaceOfBirthForForeingBornPipeline(EasyPipeline):
 
         load_step = LoadStep(
             "acs_ygf_place_of_birth_for_foreign_born_{}".format(params.get('estimate')), db_connector, if_exists='append',
-         schema='acs', dtype=dtype, pk=['geoid', 'dim_0', 'dim_1', 'dim_2', 'dim_3'], nullable_list=['mea', 'moe']
+            schema='acs', dtype=dtype, pk=['geoid', 'dim_0', 'dim_1', 'dim_2', 'dim_3'], nullable_list=['mea', 'moe']
         )
 
         return [transform_step, load_step]
@@ -127,12 +111,9 @@ class AcsYgfPlaceOfBirthForForeingBornPipeline(EasyPipeline):
 if __name__ == '__main__':
     acs_pipeline = AcsYgfPlaceOfBirthForForeingBornPipeline()
     for estimate in ['1', '5']:
-        for year in range(2019, 2020 + 1):
-            if year == 2020 and estimate=='1':
-                continue
-            else:
-                acs_pipeline.run({
-                    'year': year,
-                    'estimate': estimate,
-                    'server': 'monet-backend'
-                })
+        for year in range(2015, 2018 + 1):
+            acs_pipeline.run({
+                'year': year,
+                'estimate': estimate,
+                'server': 'monet-backend'
+            })
