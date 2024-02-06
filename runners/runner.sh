@@ -8,7 +8,7 @@ fi
 
 # Assign arguments to variables
 export DATAUSA_PATH="$1" # ex. /code/datausa/datausa-acs-bamboo-etl
-export VENV_PATH="$2" # ex. ~/venv
+export VENV_PATH="$2" # ex. /code/datausa/datausa-acs-bamboo-etl/venv
 export SERVERS="$3" # ex. postgres-zcube or monet-backend
 export YEAR="$4" # ex. 2021
 export ESTIMATES="$5"
