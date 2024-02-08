@@ -11,7 +11,7 @@ from bamboo_lib.steps import DownloadStep, LoadStep
 from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
 from acs.helper import create_geoid_in_df
 from acs.helper_2 import read_by_zone
-from static import DICT_RENAME, COL_CHANGES_2019
+from static import DICT_RENAME, COL_CHANGES_2019, COL_CHANGE_2022
 
 from helper import add_cols_2019, change_cols_2019
 pd.options.display.max_columns = 200
@@ -31,10 +31,22 @@ class TransformStep(PipelineStep):
             DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_5_2019'],
             DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_6_2019'],
             DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_7_2019']
+        ] if int(params.get("year")) < 2022 else [
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_1_2022'], 
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_2_2022'], 
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_3_2022'],
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_4_2022'],
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_5_2022'],
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_6_2022'],
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_7_2022'],
+            DICT_APIS['acs_ygf_place_of_birth_for_foreing_born_8_2022']
         ]
 
         def transform_by_zone(year, geo, estimate, apis, api_key):
             df = read_by_zone(year, geo, estimate, apis, api_key)
+
+            if int(params.get("year")) >= 2022:
+                df.rename(columns=COL_CHANGE_2022, inplace=True)
 
             ########## Fix for 2019 #####################
             #print(df.head())
@@ -127,7 +139,7 @@ class AcsYgfPlaceOfBirthForForeingBornPipeline(EasyPipeline):
 if __name__ == '__main__':
     acs_pipeline = AcsYgfPlaceOfBirthForForeingBornPipeline()
     for estimate in ['1', '5']:
-        for year in range(2019, 2020 + 1):
+        for year in range(2019, 2022 + 1):
             if year == 2020 and estimate=='1':
                 continue
             else:
