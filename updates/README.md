@@ -114,5 +114,21 @@ BAMBOO_DB_HOST=localhost:5432
 API_KEY=<API_KEY>
 ```
 
+### Execute the pipeline
+
+```bash
+$ cd datausa-acs-bamboo-etl
+$ screen -S datausa-acs-bamboo
+$ docker build . -t datausa-acs-bamboo-etl
+$ YEAR=2023
+$ SERVER=monet-backend
+$ docker run --rm -it -v $(pwd):/datausa-acs-bamboo-etl -v /srv/storage/code_niconetz/tmp:/app/tmp/bamboo_downloads --network="host" --workdir /datausa-acs-bamboo-etl --env-file $(pwd)/.env.local datausa-acs-bamboo-etl:latest bash updates/update-acs.sh $YEAR $SERVER
+```
+
+### Check resutls
+```bash
+docker run --rm -d -v $(pwd):/datausa-acs-bamboo-etl --workdir /datausa-acs-bamboo-etl datausa-acs-bamboo-etl:latest bash updates/log-search.sh && cat updates/result.txt
+```
+
 # Questions
 If there's a question about this ask me at `nicolas.netz@datawheel.us`
