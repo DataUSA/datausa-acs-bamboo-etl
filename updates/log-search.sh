@@ -2,7 +2,7 @@
 
 # Define the search string
 search_string="Traceback (most recent call last):"
-# other_search_str="WARNING:clickhouse_driver.connection:Error"
+other_search_str="WARNING:clickhouse_driver.connection:Error"
 
 # Create or overwrite the result.txt file
 > updates/result.txt

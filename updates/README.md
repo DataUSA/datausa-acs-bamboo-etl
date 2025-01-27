@@ -80,14 +80,15 @@ Configure a postgres database and a monet database using docker. This procedure 
 # Create the database
 docker run -d \
   --name monetdb-container \
-  -e MONETDB_PASSWORD=monetdb \
+  -e MDB_DB_ADMIN_PASS=monetdb \
   -e MONETDB_USERNAME=monetdb \
   -e MDB_CREATE_DBS=datausa \
   -p 50000:50000 \
   monetdb/monetdb
 
 # Create acs Schema
-docker exec -it monetdb-container mclient -u monetdb -P monetdb -d datausa -s "CREATE SCHEMA acs;"
+docker exec -it monetdb-container mclient -h localhost -u monetdb -p monetdb -d datausa -s "CREATE SCHEMA acs;"
+
 ```
 
 ### Start a PostgreSQL database
@@ -121,8 +122,8 @@ $ cd datausa-acs-bamboo-etl
 $ screen -S datausa-acs-bamboo
 $ docker build . -t datausa-acs-bamboo-etl
 $ YEAR=2023
-$ SERVER=monet-backend
-$ docker run --rm -it -v $(pwd):/datausa-acs-bamboo-etl -v /srv/storage/code_niconetz/tmp:/app/tmp/bamboo_downloads --network="host" --workdir /datausa-acs-bamboo-etl --env-file $(pwd)/.env.local datausa-acs-bamboo-etl:latest bash updates/update-acs.sh $YEAR $SERVER
+$ SERVER=monet-backend or SERVER=postgres-zcube
+$ docker run --rm -it -v $(pwd):/datausa-acs-bamboo-etl --network="host" --workdir /datausa-acs-bamboo-etl --env-file $(pwd)/.env.local datausa-acs-bamboo-etl:latest bash updates/update-acs.sh $YEAR $SERVER
 ```
 
 ### Check resutls
