@@ -10,7 +10,7 @@ from bamboo_lib.steps import DownloadStep, LoadStep
 from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
 from acs.helper import create_geoid_in_df, read_file
 from acs.helper_2 import read_by_zone
-from static import DICT_RENAME
+from static import DICT_RENAME, DICT_RENAME2023
 
 api_key = os.environ['API_KEY']
 
@@ -31,11 +31,22 @@ class TransformStep(PipelineStep):
             DICT_APIS['acs_ygsi_gender_by_industry_9']
         ]
 
+        if year>=2023: #Modify acs_ygsi_gender_by_industry_5 api
+            deleted_columns=['B24030_206E,','B24030_206M,',
+                             'B24030_207E,','B24030_207M,',
+                             'B24030_208E,','B24030_208M,',
+                             'B24030_209E,','B24030_209M,',]
+            for col in deleted_columns:
+                
+                list_apis[4][0]=list_apis[4][0].replace(col,'')
+            list_apis[4][1]=list_apis[4][0]+'&in=state:{}'
+            
         def transform_by_zone(year, geo, estimate, apis, api_key):
             df = read_file('/home/deploy/datausa-acs-bamboo-etl/acs/data/B24030_2014.csv') if str(year) == '2014' and estimate == '1' and geo == 'us' else read_by_zone(year, geo, estimate, apis, api_key)
             df = create_geoid_in_df(df, geo)
             df.set_index('geoid', inplace=True)
-            df.rename(columns = DICT_RENAME, inplace=True)
+
+            df.rename(columns = DICT_RENAME, inplace=True) if int(year) < 2023 else df.rename(columns = DICT_RENAME2023, inplace=True)  #I add this :)
 
             list_all = [
                         [col for col in df.columns if col[0:3] == 'mea'], 
@@ -113,9 +124,9 @@ class AcsYgsiGenderByIndustryPipeline(EasyPipeline):
 if __name__ == '__main__':
     acs_pipeline = AcsYgsiGenderByIndustryPipeline()
     for estimate in ['1']:
-        for year in range(2013, 2019 + 1):
+        for year in range(2023, 2023 + 1):
             acs_pipeline.run({
                 'year': year,
                 'estimate': estimate,
-                'server': 'monet-backend'
+                'server': 'postgres-zcube'
             })
