@@ -5,3 +5,7 @@ postgres-zcube:
 monet-backend:
   driver: bamboo_lib.connectors.drivers.monet.MonetDriver
   uri: monetdb://monetdb:$DATAUSA_DB_PW@$DATAUSA_DB_HOST:50000/datausa
+
+clickhouse-database:
+  driver: bamboo_lib.connectors.drivers.clickhouse.ClickhouseDriver
+  uri: clickhouse://$CLICKHOUSE_USERNAME:$CLICKHOUSE_PASSWORD@$CLICKHOUSE_URL/$CLICKHOUSE_DATABASE
