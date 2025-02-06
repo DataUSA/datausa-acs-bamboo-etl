@@ -31,7 +31,7 @@ class TransformStep(PipelineStep):
             DICT_APIS['acs_ygsi_gender_by_industry_9']
         ]
 
-        if year>=2023: #Modify acs_ygsi_gender_by_industry_5 api
+        if int(year)>=2023: #Modify acs_ygsi_gender_by_industry_5 api
             deleted_columns=['B24030_206E,','B24030_206M,',
                              'B24030_207E,','B24030_207M,',
                              'B24030_208E,','B24030_208M,',
