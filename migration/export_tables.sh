@@ -29,7 +29,7 @@ while IFS= read -r table; do
     echo "Exporting table: $table"
     
     # Export table to CSV using monetdb
-    mclient -u $MONET_DB_USER -d $MONET_DB_NAME  -p $MONET_DB_PW $-s "COPY SELECT * FROM acs.$table INTO '$TEMP_DIR/${table}.csv' USING DELIMITERS ',' '\n' '\"' NULL AS '\N';"
+    mclient -u monetdb -d datausa  -p $DATAUSA_DB_PW -s "COPY SELECT * FROM acs.$table INTO '$TEMP_DIR/${table}.csv' USING DELIMITERS ',' '\n' '\"' NULL AS '\N';"
     
     # Compress the CSV file
     gzip "$TEMP_DIR/${table}.csv"
