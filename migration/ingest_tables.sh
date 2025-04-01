@@ -24,7 +24,8 @@ fi
 
 # Step 2: Ingest data into ClickHouse
 echo "Ingesting data into table $table ..."
-cat "$csv_file" | clickhouse-client --query="INSERT INTO $table FORMAT CSVWithNames"
+#cat "$csv_file" | clickhouse-client --query="INSERT INTO $table FORMAT CSV NULL=''"
+clickhouse-client --database=datausa_db --password=$PWD --query="INSERT INTO $table FORMAT CSV" < "$csv_file"
 
 # Check if the ingestion was successful
 if [ $? -ne 0 ]; then
