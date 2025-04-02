@@ -24,8 +24,17 @@ fi
 
 # Step 2: Ingest data into ClickHouse
 echo "Ingesting data into table $table ..."
-#cat "$csv_file" | clickhouse-client --query="INSERT INTO $table FORMAT CSV NULL=''"
-clickhouse-client --database=datausa_db --password=$PWD --query="INSERT INTO $table FORMAT CSV" < "$csv_file"
+
+awk -F, '{
+    for (i=1; i<=NF; i++) {
+        if ($i == "" || $i ~ /^null$/) $i="\\N";
+        
+        else if ($i ~ /^[0-9.eE+-]+$/) $i=sprintf("%.0f", $i);
+    }
+    print
+}' OFS=, $csv_file | \
+clickhouse-client --database=datausa_db --password=$PWD \
+--query="INSERT INTO $table FORMAT CSV"
 
 # Check if the ingestion was successful
 if [ $? -ne 0 ]; then

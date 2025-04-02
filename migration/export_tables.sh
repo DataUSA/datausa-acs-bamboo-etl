@@ -31,7 +31,6 @@ while IFS= read -r table; do
     
     # Export table to CSV using monetdb
     mclient -u monetdb -d datausa -s "COPY SELECT * FROM acs.$table INTO '$TEMP_DIR/${table}.csv' USING DELIMITERS ',', '\n', '\"';"
-    
     # Compress the CSV file
     sudo gzip "$TEMP_DIR/${table}.csv"
 done < "$TABLES_FILE"
