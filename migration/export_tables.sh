@@ -13,9 +13,6 @@ export MONETDB_PASSWD="monetdb"
 DEST_DIR="/home/deploy/backup"
 TABLES_FILE="clean_tables.txt"
 
-# Create destination directory if it doesn't exist
-mkdir -p "$DEST_DIR"
-
 # Check if the tables file exists
 if [ ! -f "$TABLES_FILE" ]; then
     echo "Error: The file $TABLES_FILE does not exist"
