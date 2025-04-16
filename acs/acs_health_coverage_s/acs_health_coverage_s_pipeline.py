@@ -82,27 +82,27 @@ class AcsHealthCoverageSPipeline(EasyPipeline):
         db_connector = Connector.fetch(params.get('server'), open('../../conns.yaml'))
         
         dtype = {
-            'year': 'smallint',
-            'moe_0': 'float',
-            'moe_1': 'float',
-            'moe_2': 'float',
-            'moe_3': 'float',
-            'moe_4': 'float',
-            'mea_0': 'float',
-            'mea_1': 'float',
-            'mea_2': 'float',
-            'mea_3': 'float',
-            'mea_4': 'float',
-            'dim_0': 'int',
-            'dim_1': 'int',
-            'geoid': 'text'
+            'year': 'UInt16',
+            'moe_0': 'UInt32',
+            'moe_1': 'UInt16',
+            'moe_2': 'UInt16',
+            'moe_3': 'UInt16',
+            'moe_4': 'UInt16',
+            'mea_0': 'UInt32',
+            'mea_1': 'UInt32',
+            'mea_2': 'UInt32',
+            'mea_3': 'UInt32',
+            'mea_4': 'UInt32',
+            'dim_0': 'UInt8',
+            'dim_1': 'UInt8',
+            'geoid': 'String'
         }
 
         transform_step = TransformStep()
 
         load_step = LoadStep(
             "acs_health_coverage_s_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid', 'dim_0', 'dim_1'], nullable_list=['mea_0', 'mea_1', 'mea_2', 'mea_3', 'mea_4', 'moe_0', 'moe_1', 'moe_2', 'moe_3', 'moe_4']
+            schema='acs', dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea_0', 'mea_1', 'mea_2', 'mea_3', 'mea_4', 'moe_0', 'moe_1', 'moe_2', 'moe_3', 'moe_4']
         )
 
         return [transform_step, load_step]
@@ -117,5 +117,5 @@ if __name__ == '__main__':
                 acs_pipeline.run({
                     'year': year,
                     'estimate': estimate,
-                    'server': 'monet-backend'
+                    'server': 'clickhouse-database'
                 })

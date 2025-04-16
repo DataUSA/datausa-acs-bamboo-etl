@@ -55,17 +55,17 @@ class AcsYgTotalPopulationPipeline(EasyPipeline):
         db_connector = Connector.fetch(params.get('server'), open('../../conns.yaml'))
 
         dtype = {
-            'year': 'smallint',
-            'moe': 'float',
-            'mea': 'float',
-            'geoid': 'text'
+            'year': 'UInt16',
+            'moe': 'UInt16',
+            'mea': 'UInt32',
+            'geoid': 'String'
         }
 
         transform_step = TransformStep()
 
         load_step = LoadStep(
             "acs_yg_total_population_{}".format(params.get('estimate')), db_connector, if_exists = 'append',
-            schema= 'acs', dtype = dtype, pk = ['geoid'], nullable_list=['moe', 'mea']
+            dtype = dtype, pk = ['geoid', 'year'], nullable_list=['moe', 'mea']
         )
 
         return [transform_step, load_step]
@@ -80,5 +80,5 @@ if __name__ == '__main__':
                 acs_pipeline.run({
                     'year': year,
                     'estimate': estimate,
-                    'server': 'monet-backend'
+                    'server': 'clickhouse-database'
                 })
