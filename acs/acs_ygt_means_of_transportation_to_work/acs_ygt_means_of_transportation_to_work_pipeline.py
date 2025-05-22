@@ -92,7 +92,7 @@ class AcsYgtMeansOfTransportationToWorkPipeline(EasyPipeline):
 
         load_step = LoadStep(
             "acs_ygt_means_of_transportation_to_work_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea', 'moe']
+            dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea', 'moe']
         )
 
         return [transform_step, load_step]
