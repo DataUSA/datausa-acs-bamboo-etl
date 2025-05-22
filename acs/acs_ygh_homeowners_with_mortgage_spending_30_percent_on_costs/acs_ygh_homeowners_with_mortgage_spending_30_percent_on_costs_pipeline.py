@@ -90,7 +90,7 @@ class AcsYghHomeownersWithMortgageSpending30PercentOnCostsPipeline(EasyPipeline)
 
         load_step = LoadStep(
             "acs_ygh_homeowners_with_mortgage_spending_30_percent_on_costs_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea', 'moe']
+            dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea', 'moe']
         )
 
         return [transform_step, load_step]
