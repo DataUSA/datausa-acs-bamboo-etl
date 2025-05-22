@@ -104,7 +104,7 @@ class AcsYgiIndustryForMedianEarningsPipeline(EasyPipeline):
 
         load_step = LoadStep(
             "acs_ygi_industry_for_median_earnings_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea_lvl_0', 'moe_lvl_0', 'mea_lvl_1', 'moe_lvl_1']
+            dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea_lvl_0', 'moe_lvl_0', 'mea_lvl_1', 'moe_lvl_1']
         )
 
         return [transform_step, load_step]
