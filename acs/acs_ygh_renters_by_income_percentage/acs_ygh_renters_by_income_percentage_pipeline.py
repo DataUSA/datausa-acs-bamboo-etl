@@ -91,7 +91,6 @@ class AcsYghRentersByIncomePercentagePipeline(EasyPipeline):
             'mea':      'UInt32',
             'dim_0':    'UInt8',
             'dim_1':    'UInt8',
-            'health':   'UInt8',
             'geoid':    'String'
         }
 
