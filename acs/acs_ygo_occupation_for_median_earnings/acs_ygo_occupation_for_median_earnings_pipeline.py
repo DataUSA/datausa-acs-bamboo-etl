@@ -94,24 +94,24 @@ class AcsYgoOccupationForMedianEarningsPipeline(EasyPipeline):
         db_connector = Connector.fetch(params.get('server'), open('../../conns.yaml'))
         
         dtype = {
-            'year': 'smallint',
-            'moe_lvl_0': 'float',
-            'mea_lvl_0': 'float',
-            'moe_lvl_1': 'float',
-            'mea_lvl_1': 'float',
-            'moe_lvl_2': 'float',
-            'mea_lvl_2': 'float',
-            'dim_0': 'int',
-            'dim_1': 'int',
-            'dim_2': 'int',
-            'geoid': 'text'
+            'year': 'UInt16',
+            'moe_lvl_0': 'Float32',
+            'mea_lvl_0': 'Float32',
+            'moe_lvl_1': 'Float32',
+            'mea_lvl_1': 'Float32',
+            'moe_lvl_2': 'Float32',
+            'mea_lvl_2': 'Float32',
+            'dim_0': 'UInt8',
+            'dim_1': 'UInt8',
+            'dim_2': 'UInt8',
+            'geoid': 'String'
         }
 
         transform_step = TransformStep()
 
         load_step = LoadStep(
             "acs_ygo_occupation_for_median_earnings_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid', 'dim_0', 'dim_1', 'dim_2'], nullable_list=['mea_lvl_0', 'moe_lvl_0', 'mea_lvl_1', 'moe_lvl_1', 'mea_lvl_2', 'moe_lvl_2']
+            dtype=dtype, pk=['geoid', 'dim_0', 'dim_1', 'dim_2'], nullable_list=['mea_lvl_0', 'moe_lvl_0', 'mea_lvl_1', 'moe_lvl_1', 'mea_lvl_2', 'moe_lvl_2']
         )
 
         return [transform_step, load_step]
@@ -126,5 +126,5 @@ if __name__ == '__main__':
                 acs_pipeline.run({
                     'year': year,
                     'estimate': estimate,
-                    'server': 'monet-backend'
+                    'server': 'clickhouse-database'
                 })

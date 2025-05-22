@@ -91,18 +91,18 @@ class AcsYgrMedianHouseholdIncomeRacePipeline(EasyPipeline):
         db_connector = Connector.fetch(params.get('server'), open('../../conns.yaml'))
         
         dtype = {
-            'year': 'smallint',
-            'moe': 'float',
-            'mea': 'float',
-            'race': 'int',
-            'geoid': 'text'
+            'year': 'UInt16',
+            'moe': 'Float32',
+            'mea': 'Float32',
+            'race': 'UInt8',
+            'geoid': 'String'
         }
 
         transform_step = TransformStep()
 
         load_step = LoadStep(
-            "acs_ygr_median_household_income_race_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid', 'race'], nullable_list=['mea', 'moe']
+            "acs_ygr_median_household_income_race_{}".format(params.get('estimate')), db_connector, if_exists='append'
+            , dtype=dtype, pk=['geoid', 'race'], nullable_list=['mea', 'moe']
         )
 
         return [transform_step, load_step]
@@ -117,5 +117,5 @@ if __name__ == '__main__':
                 acs_pipeline.run({
                     'year': year,
                     'estimate': estimate,
-                    'server': 'monet-backend'
+                    'server': 'clickhouse-database'
                 })
