@@ -73,8 +73,8 @@ class AcsYgtMeanTransportationTimeToWorkPipeline(EasyPipeline):
 
         dtype = {
             'year':     'UInt16',
-            'moe':      'UInt32',
-            'mea':      'UInt32',
+            'moe':      'Float32',
+            'mea':      'Float32',
             'geoid':    'String'
         }
         
