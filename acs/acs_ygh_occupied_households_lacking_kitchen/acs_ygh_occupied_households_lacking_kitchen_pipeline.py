@@ -53,7 +53,7 @@ class TransformStep(PipelineStep):
             return df_all
         
         df_final = pd.DataFrame()
-        list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district']
+        list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district', 'tract']
 
         for zone in list_geo:
             df_geo = transform_by_zone(year, zone, estimate, apis, api_key)
@@ -79,18 +79,18 @@ class AcsYghOccupiedHouseholdsLackingKitchenPipeline(EasyPipeline):
         db_connector = Connector.fetch(params.get('server'), open('../../conns.yaml'))
         
         dtype = {
-            'year': 'smallint',
-            'moe': 'float',
-            'mea': 'float',
-            'dim_0': 'int',
-            'geoid': 'text'
+            'year': 'UInt16',
+            'moe': 'Float32',
+            'mea': 'Float32',
+            'dim_0': 'UInt8',
+            'geoid': 'String'
         }
 
         transform_step = TransformStep()
 
         load_step = LoadStep(
             "acs_ygh_occupied_households_lacking_kitchen_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid', 'dim_0'], nullable_list=['mea', 'moe']
+            dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea', 'moe']
         )
 
         return [transform_step, load_step]
@@ -98,12 +98,12 @@ class AcsYghOccupiedHouseholdsLackingKitchenPipeline(EasyPipeline):
 if __name__ == '__main__':
     acs_pipeline = AcsYghOccupiedHouseholdsLackingKitchenPipeline()
     for estimate in ['1', '5']:
-        for year in range(2013, 2020 + 1):
+        for year in range(2021, 2023+1): #(2013, 2023 + 1):
             if year == 2020 and estimate == "1":
                 continue
             else:
                 acs_pipeline.run({
                     'year': year,
                     'estimate': estimate,
-                    'server': 'monet-backend'
+                    'server': 'clickhouse-database'
                 })
