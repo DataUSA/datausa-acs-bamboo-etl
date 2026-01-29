@@ -102,7 +102,7 @@ class AcsHealthCoverageSPipeline(EasyPipeline):
 
         load_step = LoadStep(
             "acs_health_coverage_s_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea_0', 'mea_1', 'mea_2', 'mea_3', 'mea_4', 'moe_0', 'moe_1', 'moe_2', 'moe_3', 'moe_4']
+            dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea_0', 'mea_1', 'mea_2', 'mea_3', 'mea_4', 'moe_0', 'moe_1', 'moe_2', 'moe_3', 'moe_4']
         )
 
         return [transform_step, load_step]

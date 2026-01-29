@@ -28,7 +28,7 @@ To run the script, create a screen session, and go to the repository. Then execu
 $ screen -S datausa
 $ cd /path/to/datausa-acs-bamboo-etl
 # ingest 2021 to postgres
-$ bash runners/runner.sh /home/deploy/datausa-acs-bamboo-etl/ /home/deploy/datausa-acs-bamboo-etl/venv postgres-zcube 2022 5
+$ bash runners/runner.sh /home/deploy/datausa-acs-bamboo-etl/ /home/deploy/datausa-acs-bamboo-etl/venv clickhouse-database 2024 1
 # The script should start. You should see some terminal output as:
 
 INFO:bamboo_lib.logger:Received parameter with key=year and value=2021
