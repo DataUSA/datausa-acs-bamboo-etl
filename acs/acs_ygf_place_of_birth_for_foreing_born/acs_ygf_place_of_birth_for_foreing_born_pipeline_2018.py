@@ -106,7 +106,7 @@ class AcsYgfPlaceOfBirthForForeingBornPipeline(EasyPipeline):
             schema='acs', dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea', 'moe']
         )
 
-        return [transform_step, load_step]
+        return [transform_step] # load_step
         
 if __name__ == '__main__':
     acs_pipeline = AcsYgfPlaceOfBirthForForeingBornPipeline()

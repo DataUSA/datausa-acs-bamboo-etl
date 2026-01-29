@@ -87,10 +87,10 @@ class AcsYgstGenderOfWorkersByTransportationToWorkPipeline(EasyPipeline):
             'year': 'UInt16',
             'moe': 'Float32',
             'mea': 'Float32',
-            'dim_0': 'Int8',
-            'dim_1': 'Int8',
-            'dim_2': 'Int8',
-            'dim_3': 'IntI',
+            'dim_0': 'UInt8',
+            'dim_1': 'UInt8',
+            'dim_2': 'UInt8',
+            'dim_3': 'UInt8',
             'geoid': 'String'
         }
 
@@ -98,7 +98,7 @@ class AcsYgstGenderOfWorkersByTransportationToWorkPipeline(EasyPipeline):
 
         load_step = LoadStep(
             "acs_ygst_gender_of_workers_by_transportation_to_work_{}".format(params.get('estimate')), db_connector, if_exists='append', 
-            dtype=dtype, pk=['geoid', 'dim_0', 'dim_1', 'dim_2', 'dim_3'], nullable_list=['mea', 'moe']
+            dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea', 'moe']
         )
 
         return [transform_step, load_step]
