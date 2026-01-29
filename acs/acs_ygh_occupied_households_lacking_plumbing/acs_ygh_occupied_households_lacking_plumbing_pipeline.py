@@ -92,7 +92,7 @@ class AcsYghOccupiedHouseholdsLackingPlumbingPipeline(EasyPipeline):
 
         load_step = LoadStep(
             "acs_ygh_occupied_households_lacking_plumbing_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            dtype=dtype, pk=['geoid', 'year']
+            dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea', 'moe']
         )
 
         return [transform_step, load_step]

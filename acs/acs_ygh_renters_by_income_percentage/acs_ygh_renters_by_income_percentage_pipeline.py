@@ -86,18 +86,19 @@ class AcsYghRentersByIncomePercentagePipeline(EasyPipeline):
         db_connector = Connector.fetch(params.get('server'), open('../../conns.yaml'))
         
         dtype = {
-            'year':     'UInt16',
-            'moe':      'UInt32',
-            'mea':      'UInt32',
-            'dim_0':    'UInt8',
-            'dim_1':    'UInt8',
-            'geoid':    'String'
+            'year': 'UInt16',
+            'moe': 'Float32',
+            'mea': 'Float32',
+            'dim_0': 'UInt8',
+            'dim_1': 'UInt8',
+            'geoid': 'String'
         }
 
         transform_step = TransformStep()
 
         load_step = LoadStep(
-            "acs_ygh_renters_by_income_percentage_{}".format(params.get('estimate')), db_connector, if_exists='append', dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea', 'moe']
+            "acs_ygh_renters_by_income_percentage_{}".format(params.get('estimate')), db_connector, if_exists='append',
+            dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea', 'moe']
         )
 
         return [transform_step, load_step]
