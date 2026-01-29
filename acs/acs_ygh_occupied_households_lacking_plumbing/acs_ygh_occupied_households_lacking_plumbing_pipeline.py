@@ -53,7 +53,7 @@ class TransformStep(PipelineStep):
             return df_all
         
         df_final = pd.DataFrame()
-        list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district']
+        list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district', 'tract']
 
         for zone in list_geo:
             df_geo = transform_by_zone(year, zone, estimate, apis, api_key)
@@ -62,7 +62,9 @@ class TransformStep(PipelineStep):
         df_final['dim_0'] = df_final['dim_0'].astype(int)
         df_final[['mea', 'moe']] = df_final[['mea', 'moe']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
-  
+        
+        print(df_final.head())
+        print(df_final.info())
         return df_final
 
 class AcsYghOccupiedHouseholdsLackingPlumbingPipeline(EasyPipeline):
@@ -98,7 +100,7 @@ class AcsYghOccupiedHouseholdsLackingPlumbingPipeline(EasyPipeline):
 if __name__ == '__main__':
     acs_pipeline = AcsYghOccupiedHouseholdsLackingPlumbingPipeline()
     for estimate in ['1', '5']:
-        for year in range(2013, 2020 + 1):
+        for year in range(2013, 2023 + 1):
             if year == 2020 and estimate == "1":
                 continue
             else:

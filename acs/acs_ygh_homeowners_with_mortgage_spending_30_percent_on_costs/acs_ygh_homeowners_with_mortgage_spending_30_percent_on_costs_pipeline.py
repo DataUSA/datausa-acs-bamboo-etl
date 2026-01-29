@@ -79,18 +79,18 @@ class AcsYghHomeownersWithMortgageSpending30PercentOnCostsPipeline(EasyPipeline)
         db_connector = Connector.fetch(params.get('server'), open('../../conns.yaml'))
         
         dtype = {
-            'year': 'smallint',
-            'moe': 'float',
-            'mea': 'float',
-            'dim_0': 'int',
-            'geoid': 'text'
+            'year': 'UInt16',
+            'moe': 'Float32',
+            'mea': 'Float32',
+            'dim_0': 'UInt8',
+            'geoid': 'String'
         }
 
         transform_step = TransformStep()
 
         load_step = LoadStep(
             "acs_ygh_homeowners_with_mortgage_spending_30_percent_on_costs_{}".format(params.get('estimate')), db_connector, if_exists='append',
-            schema='acs', dtype=dtype, pk=['geoid', 'dim_0'], nullable_list=['mea', 'moe']
+            dtype=dtype, pk=['geoid', 'year'], nullable_list=['mea', 'moe']
         )
 
         return [transform_step, load_step]
@@ -105,5 +105,5 @@ if __name__ == '__main__':
                 acs_pipeline.run({
                     'year': year,
                     'estimate': estimate,
-                    'server': 'monet-backend'
+                    'server': 'clickhouse-database'
                 })
