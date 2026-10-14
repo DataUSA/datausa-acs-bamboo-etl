@@ -4,14 +4,14 @@ import pandas as pd
  
 from bamboo_lib.logger import logger
 from functools import lru_cache
-from acs.static import LIST_STATE, FIPS_CODE
+from acs.static import LIST_STATE, FIPS_CODE, LIST_SCHOOL_DISTRICT
 
 @lru_cache(maxsize=1000)
 def get_url(url):
     return requests.get(url)
 
 def read_by_zone(year, geo, estimate, apis, api_key):
-    if geo in ['us', 'state', 'county', 'place', 'metropolitan statistical area/micropolitan statistical area', 'congressional district', 'zip code tabulation area', 'public use microdata area']:
+    if geo in ['us', 'state', 'county', 'place', 'metropolitan statistical area/micropolitan statistical area', 'congressional district', 'zip code tabulation area', 'public use microdata area'] + LIST_SCHOOL_DISTRICT:
         url = apis[0].format(year, estimate, geo, api_key)
         logger.info("Downloading {}: {} from API...".format(year, geo))
         

@@ -8,7 +8,7 @@ from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import DownloadStep, LoadStep
 
-from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
+from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST, LIST_SCHOOL_DISTRICT
 from acs.helper import read_by_zone, create_geoid_in_df, read_file
 
 api_key = os.environ['API_KEY']
@@ -29,7 +29,13 @@ class TransformStep(PipelineStep):
 
         df_final = pd.DataFrame()
 
-        list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district'] if estimate == '1' else ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'tract', 'congressional district']
+        # --geo=school_district loads only school districts (ACS 5-year only)
+        if params.get('geo') == 'school_district':
+            if estimate != '5':
+                raise ValueError('School districts are only loaded for the ACS 5-year estimate')
+            list_geo = LIST_SCHOOL_DISTRICT
+        else:
+            list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district'] if estimate == '1' else ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'tract', 'congressional district']
 
         for zone in list_geo:
             df_geo = transform_by_zone(year, zone, estimate, apis, api_key)
@@ -47,7 +53,8 @@ class AcsYgTotalPopulationPipeline(EasyPipeline):
         return[
             Parameter(label='year', name='year', dtype=str),
             Parameter(label='estimate', name='estimate', dtype=str),
-            Parameter(label='server', name='server', dtype=str)
+            Parameter(label='server', name='server', dtype=str),
+            Parameter(label='geo', name='geo', dtype=str)
         ]
 
     @staticmethod
