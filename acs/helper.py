@@ -4,11 +4,19 @@ import pandas as pd
  
 from bamboo_lib.logger import logger
 from functools import lru_cache
-from acs.static import LIST_STATE, FIPS_CODE, LIST_SCHOOL_DISTRICT
+from acs.static import LIST_STATE, FIPS_CODE, LIST_SCHOOL_DISTRICT, SCHOOL_DISTRICT_PSEUDO
 
 @lru_cache(maxsize=1000)
 def get_url(url):
     return requests.get(url)
+
+def select_geos(params, default):
+    # --geo=school_district loads only school districts (ACS 5-year only)
+    if params.get('geo') == 'school_district':
+        if params.get('estimate') != '5':
+            raise ValueError('School districts are only loaded for the ACS 5-year estimate')
+        return LIST_SCHOOL_DISTRICT
+    return default
 
 def read_by_zone(year, geo, estimate, apis, api_key):
     if geo in ['us', 'state', 'county', 'place', 'metropolitan statistical area/micropolitan statistical area', 'congressional district', 'zip code tabulation area', 'public use microdata area'] + LIST_SCHOOL_DISTRICT:
@@ -38,6 +46,10 @@ def read_by_zone(year, geo, estimate, apis, api_key):
 
 
 def create_geoid_in_df(df, geo):
+    if geo in LIST_SCHOOL_DISTRICT:
+        # Pseudo-districts have no member in the School District dimension
+        df = df[~df[geo].isin(SCHOOL_DISTRICT_PSEUDO)].reset_index(drop=True)
+
     if geo == 'us':
         df['geoid'] = FIPS_CODE[geo]
     elif geo == 'state':

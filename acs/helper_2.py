@@ -3,10 +3,10 @@ import numpy as np
 import pandas as pd
 
 from bamboo_lib.logger import logger
-from acs.static import LIST_STATE, FIPS_CODE
+from acs.static import LIST_STATE, FIPS_CODE, LIST_SCHOOL_DISTRICT
 
 def read_by_zone(year, geo, estimate, apis, api_key):
-    if geo in ['us', 'state', 'county', 'place', 'metropolitan statistical area/micropolitan statistical area', 'congressional district', 'zip code tabulation area', 'public use microdata area']:   
+    if geo in ['us', 'state', 'county', 'place', 'metropolitan statistical area/micropolitan statistical area', 'congressional district', 'zip code tabulation area', 'public use microdata area'] + LIST_SCHOOL_DISTRICT:
         
         if geo in ['us', 'state', 'metropolitan statistical area/micropolitan statistical area', 'zip code tabulation area']: 
             df_all = pd.DataFrame({geo: []})

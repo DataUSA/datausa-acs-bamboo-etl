@@ -8,8 +8,8 @@ from bamboo_lib.connectors.models import Connector
 from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import DownloadStep, LoadStep
 
-from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST, LIST_SCHOOL_DISTRICT
-from acs.helper import read_by_zone, create_geoid_in_df, read_file
+from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
+from acs.helper import read_by_zone, create_geoid_in_df, read_file, select_geos
 
 api_key = os.environ['API_KEY']
 
@@ -29,13 +29,7 @@ class TransformStep(PipelineStep):
 
         df_final = pd.DataFrame()
 
-        # --geo=school_district loads only school districts (ACS 5-year only)
-        if params.get('geo') == 'school_district':
-            if estimate != '5':
-                raise ValueError('School districts are only loaded for the ACS 5-year estimate')
-            list_geo = LIST_SCHOOL_DISTRICT
-        else:
-            list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district'] if estimate == '1' else ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'tract', 'congressional district']
+        list_geo = select_geos(params, ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district'] if estimate == '1' else ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'tract', 'congressional district'])
 
         for zone in list_geo:
             df_geo = transform_by_zone(year, zone, estimate, apis, api_key)

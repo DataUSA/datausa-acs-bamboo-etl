@@ -21,6 +21,9 @@ FIPS_CODE = {
 
 LIST_SCHOOL_DISTRICT = ['school district (elementary)', 'school district (secondary)', 'school district (unified)']
 
+# District codes of the "Remainder of <state>" and "School District Not Defined" pseudo-districts.
+SCHOOL_DISTRICT_PSEUDO = ['99999', '99997']
+
 DICT_APIS = {
     'acs_yg_gini': ['https://api.census.gov/data/{}/acs/acs{}?get=B19083_001E,B19083_001M&for={}&key={}', 
                     'https://api.census.gov/data/{}/acs/acs{}?get=B19083_001E,B19083_001M&for={}&key={}&in=state:{}'],
