@@ -139,3 +139,5 @@ cython_debug/
 
 .DS_Store
 *.ipynb
+# School district suppression reports (acs/helper.py: log_suppressed_districts)
+acs/reports/

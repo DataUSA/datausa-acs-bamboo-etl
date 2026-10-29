@@ -1,10 +1,13 @@
+import os
 import requests
 import numpy as np
 import pandas as pd
- 
+
 from bamboo_lib.logger import logger
 from functools import lru_cache
-from acs.static import LIST_STATE, FIPS_CODE, LIST_SCHOOL_DISTRICT, SCHOOL_DISTRICT_PSEUDO
+from acs.static import LIST_STATE, FIPS_CODE, LIST_SCHOOL_DISTRICT, SCHOOL_DISTRICT_PSEUDO, NULL_LIST
+
+SUPPRESSED_REPORT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'reports', 'school_districts_suppressed.csv')
 
 @lru_cache(maxsize=1000)
 def get_url(url):
@@ -17,6 +20,38 @@ def select_geos(params, default):
             raise ValueError('School districts are only loaded for the ACS 5-year estimate')
         return LIST_SCHOOL_DISTRICT
     return default
+
+def log_suppressed_districts(df, cube, params):
+    """Record in SUPPRESSED_REPORT_PATH the school districts with no value in any row of the cube.
+
+    A district missing only some dimension members (e.g. some means of transportation) is not
+    recorded. Rows of the same cube and year from a previous run are replaced.
+    """
+    if params.get('geo') != 'school_district':
+        return
+    year = str(params.get('year'))
+
+    measures = [col for col in df.columns if col.startswith('mea')]
+    values = df[measures].apply(pd.to_numeric, errors='coerce').replace(NULL_LIST, np.nan)
+    has_data = values.notna().any(axis=1).groupby(df['geoid']).any()
+
+    sd_types = {FIPS_CODE[geo]: geo[len('school district ('):-1] for geo in LIST_SCHOOL_DISTRICT}
+    report = pd.DataFrame({'geoid': sorted(has_data[~has_data].index)})
+    report.insert(0, 'year', year)
+    report.insert(0, 'cube', cube)
+    # map instead of .str: with no suppressed districts the column is empty and not of string dtype
+    report['sd_type'] = report['geoid'].map(lambda geoid: sd_types.get(geoid[:7]))
+
+    if os.path.exists(SUPPRESSED_REPORT_PATH):
+        previous = pd.read_csv(SUPPRESSED_REPORT_PATH, dtype=str)
+        previous = previous[~((previous['cube'] == cube) & (previous['year'] == year))]
+        report = pd.concat([previous, report], ignore_index=True)
+    else:
+        os.makedirs(os.path.dirname(SUPPRESSED_REPORT_PATH), exist_ok=True)
+
+    report.sort_values(['cube', 'year', 'geoid']).to_csv(SUPPRESSED_REPORT_PATH, index=False)
+    logger.info('{} {}: {} of {} school districts fully suppressed, recorded in {}'.format(
+        cube, year, (~has_data).sum(), len(has_data), SUPPRESSED_REPORT_PATH))
 
 def read_by_zone(year, geo, estimate, apis, api_key):
     if geo in ['us', 'state', 'county', 'place', 'metropolitan statistical area/micropolitan statistical area', 'congressional district', 'zip code tabulation area', 'public use microdata area'] + LIST_SCHOOL_DISTRICT:

@@ -8,7 +8,7 @@ from bamboo_lib.models import EasyPipeline, PipelineStep, Parameter
 from bamboo_lib.steps import DownloadStep, LoadStep
 
 from acs.static import FIPS_CODE, LIST_STATE, DICT_APIS, NULL_LIST
-from acs.helper import create_geoid_in_df
+from acs.helper import create_geoid_in_df, select_geos, log_suppressed_districts
 from acs.helper_2 import read_by_zone
 from static import DICT_RENAME
 
@@ -57,7 +57,7 @@ class TransformStep(PipelineStep):
             return df_all
         
         df_final = pd.DataFrame()
-        list_geo = ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district'] 
+        list_geo = select_geos(params, ['us', 'state', 'county', 'place', 'public use microdata area', 'metropolitan statistical area/micropolitan statistical area', 'congressional district'])
         
         for zone in list_geo:
             df_geo = transform_by_zone(year, zone, estimate, list_apis, api_key)
@@ -67,6 +67,8 @@ class TransformStep(PipelineStep):
         df_final[['mea', 'moe']] = df_final[['mea', 'moe']].astype(float)
         df_final.replace(NULL_LIST, np.nan, inplace=True)
 
+        log_suppressed_districts(df_final, 'acs_ygo_housing_value_bucket_{}'.format(params.get('estimate')), params)
+
         return df_final
 
 class AcsYgohousingValueBucketPipeline(EasyPipeline):
@@ -75,7 +77,8 @@ class AcsYgohousingValueBucketPipeline(EasyPipeline):
         return[
             Parameter(label='year', name='year', dtype=str),
             Parameter(label='estimate', name='estimate', dtype=str),
-            Parameter(label='server', name='server', dtype=str)
+            Parameter(label='server', name='server', dtype=str),
+            Parameter(label='geo', name='geo', dtype=str)
         ]
     
     @staticmethod
